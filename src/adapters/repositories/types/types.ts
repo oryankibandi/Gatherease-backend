@@ -32,3 +32,60 @@ export interface CreateProfileInput {
   jobTitle?: string;
   companyName?: string;
 }
+
+export interface CreateVenueInput {
+  name: string;
+  latitude?: string;
+  longitude?: string;
+  street: string;
+  city: string;
+  imageUrl?: string;
+  country: string;
+}
+
+export interface UpdateVenueInput {
+  latitude?: string;
+  longitude?: string;
+  street?: string;
+  city?: string;
+  imageUrl?: string;
+  country?: string;
+}
+
+export interface UpdateOrganizerProfileInput {
+  city?: string;
+  street?: string;
+  organizerId: string;
+  jobTitle?: string;
+  companyName?: string;
+}
+
+export interface CreateEventInput {
+  name: string;
+  venueId: string;
+  categoryId: string;
+  isPublic?: boolean;
+  day: string;
+  date: Date;
+  city: string;
+  organizerId: string;
+}
+
+export interface UpdateEventInput {
+  name?: string;
+  isPublic?: boolean;
+  day?: string;
+  date?: Date;
+  venueId?: string;
+}
+
+export interface CreateGuestInput {
+  eventId: string;
+  userId: string;
+}
+
+export interface CreateTokenInput {
+  ownerId: string;
+  token: string;
+  refreshToken: string;
+}

@@ -2,7 +2,7 @@ import { Guest, PrismaClient, User } from '@prisma/client';
 import { IUserRepository } from './types/interfaces';
 import { CreateGuestInput, CreateUserInput } from './types/types';
 
-export default class UserRepo implements IUserRepository {
+export default class UserRepository implements IUserRepository {
   constructor(private readonly client: PrismaClient) {
     this.client = client;
   }
