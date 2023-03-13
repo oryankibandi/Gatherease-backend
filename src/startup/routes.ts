@@ -3,6 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
+import userRoutes from '../entrypoint/routes/user.routes';
 
 export default function routeSetup(app: Application) {
   app.use(morgan('combined'));
@@ -15,4 +16,6 @@ export default function routeSetup(app: Application) {
   app.get('/api/v1', (req: Request, res: Response) =>
     res.status(200).json({ message: 'Welcome to GatherEase API v1' })
   );
+
+  app.use('/api/v1/user', userRoutes);
 }

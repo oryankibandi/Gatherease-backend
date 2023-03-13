@@ -1,4 +1,4 @@
-import { Guest, Organizer, Profile, User, Venue, Event, Category, Token } from '@prisma/client';
+import { Guest, Organizer, Profile, User, Venue, Event, Category, Token, Verify } from '@prisma/client';
 import {
   CreateEventInput,
   CreateGuestInput,
@@ -7,6 +7,7 @@ import {
   CreateTokenInput,
   CreateUserInput,
   CreateVenueInput,
+  CreateVerifyInput,
   UpdateEventInput,
   UpdateOrganizerProfileInput,
   UpdateVenueInput,
@@ -16,6 +17,8 @@ export interface IUserRepository {
   getUserById(userId: string): Promise<User | null>;
 
   getUserByEmail(email: string): Promise<User | null>;
+
+  getUserByPhone(phone: string): Promise<User | null>;
 
   searchUsersByName(name: string): Promise<User[]>;
 
@@ -106,4 +109,14 @@ export interface ITokenRepository {
   getUserTokens(ownerId: string): Promise<Token[]>;
 
   deleteUserTokens(ownerId: string): Promise<void>;
+}
+
+export interface IVerify {
+  createVerification(data: CreateVerifyInput): Promise<Verify>;
+
+  getVerification(ownerId: string): Promise<Verify | null>;
+
+  updateVerification(ownerId: string, code: string): Promise<Verify>;
+
+  deleteVerfication(ownerId: string): Promise<any>;
 }

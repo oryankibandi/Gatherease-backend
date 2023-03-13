@@ -20,6 +20,13 @@ export default class UserRepository implements IUserRepository {
     });
   }
 
+  async getUserByPhone(phone: string): Promise<User | null> {
+    return this.client.user.findUnique({
+      where: { phone },
+      include: { eventsAttended: true },
+    });
+  }
+
   async searchUsersByName(name: string): Promise<User[]> {
     return this.client.user.findMany({
       where: {
