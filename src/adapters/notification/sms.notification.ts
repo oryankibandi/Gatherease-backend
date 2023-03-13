@@ -13,6 +13,8 @@ export default class SMSNotification {
   }
 
   async sendWelcomeSms(data: WelcomeSmsInput) {
-    const message = `Welcome to the GatherEase communit ${data.user.firstName}. Visit our homepage https://www.gatherease.com to see what event is happening near you.`;
+    const message = `Welcome to the GatherEase community ${data.user.firstName}. Visit our homepage https://www.gatherease.com to see what event is happening near you.`;
+
+    return this.twilioSmsService.sendSMS(message, data.user.phone);
   }
 }

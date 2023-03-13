@@ -27,3 +27,10 @@ export class InvalidCode extends ServiceError {
     this.message = message;
   }
 }
+
+export class UserAlreadyVerified extends ServiceError {
+  constructor(message: string) {
+    super();
+    this.message = message;
+  }
+}

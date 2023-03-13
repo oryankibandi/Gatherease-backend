@@ -2,7 +2,7 @@ import { IUserRepository, IVerify } from '../../adapters/repositories/types/inte
 import { ICodeGenerator, IHashGenerator, IJwtGenerator } from '../../utils/types/interfaces';
 import { UserConfirmationInput, UserRegistrationInput } from '../types/types';
 import { User } from '@prisma/client';
-import { InvalidCode, UserExistsError, UserNotFound, VerificationNotFound } from '../exceptions';
+import { InvalidCode, UserAlreadyVerified, UserExistsError, UserNotFound, VerificationNotFound } from '../exceptions';
 import eventDispatcher from '../../adapters/events';
 
 export class UserAuthService {
@@ -61,6 +61,8 @@ export class UserAuthService {
 
     const existingUser = await this.userRepo.getUserByPhone(data.phone);
     if (!existingUser) throw new UserNotFound(`Phone number ${data.phone} is not registered`);
+
+    if (existingUser.isVerified) throw new UserAlreadyVerified('User is already verified');
 
     const verify = await this.verifyRepo.getVerification(existingUser.id);
     if (!verify) throw new VerificationNotFound('Verification code not found');
