@@ -130,3 +130,17 @@ export interface IVerify {
 
   deleteVerfication(ownerId: string): Promise<any>;
 }
+
+export interface IVenueRepository {
+  getVenueById(venueId: string): Promise<Venue | null>;
+
+  getVenueByCountry(countryName: string): Promise<Venue[]>;
+
+  searchVenuesByName(name: string): Promise<Venue[]>;
+
+  createVenue(venueData: CreateVenueInput): Promise<Venue>;
+
+  updateVenue(venueId: string, venueData: CreateVenueInput): Promise<Venue>;
+
+  deleteVenue(venueId: string): Promise<void>;
+}
