@@ -37,12 +37,13 @@ export interface CreateProfileInput {
 
 export interface CreateVenueInput {
   name: string;
-  latitude?: string;
-  longitude?: string;
-  street: string;
+  latitude: number;
+  longitude: number;
   city: string;
-  imageUrl?: string;
+  street: string;
   country: string;
+  description?: string;
+  zipcode?: string;
 }
 
 export interface UpdateVenueInput {
