@@ -6,6 +6,7 @@ export interface CreateUserInput {
   fullName: string;
   email: string;
   phone: string;
+  password: string;
   isVerified?: boolean;
   role?: ROLE;
 }
@@ -21,6 +22,7 @@ export interface CreateOrganizerInput {
   fullName: string;
   email: string;
   phone: string;
+  password: string;
   role?: ROLE;
 }
 
@@ -61,7 +63,8 @@ export interface UpdateOrganizerProfileInput {
 }
 
 export interface CreateEventInput {
-  name: string;
+  title: string;
+  description: string;
   venueId: string;
   categoryId: string;
   isPublic?: boolean;
@@ -88,4 +91,9 @@ export interface CreateTokenInput {
   ownerId: string;
   token: string;
   refreshToken: string;
+}
+
+export interface CreateVerifyInput {
+  code: string;
+  ownerId: string;
 }
