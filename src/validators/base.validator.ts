@@ -15,3 +15,19 @@ export interface UserConfirmationValidationInput {
   code: string;
   phone: string;
 }
+
+export interface OrganizerLoginValidationInput {
+  email: string;
+  password: string;
+}
+
+export interface UserLoginValidationInput {
+  email: string;
+  password: string;
+}
+
+export interface organizerRefreshTokenValidationInput {
+  ownerId: string;
+  role: string;
+  refreshToken: string;
+}

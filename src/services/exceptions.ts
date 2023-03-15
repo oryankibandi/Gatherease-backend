@@ -34,3 +34,17 @@ export class UserAlreadyVerified extends ServiceError {
     this.message = message;
   }
 }
+
+export class InvalidCredentials extends ServiceError {
+  constructor(message: string) {
+    super();
+    this.message = message;
+  }
+}
+
+export class InvalidToken extends ServiceError {
+  constructor(message: string) {
+    super();
+    this.message = message;
+  }
+}

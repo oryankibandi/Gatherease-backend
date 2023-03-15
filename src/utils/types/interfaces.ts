@@ -1,7 +1,9 @@
-import { GenerateTokenPairInput, TokenPairOutput } from './types';
+import { AccessTokenPayload, FilterData, GenerateTokenPairInput, RefreshTokenPayload, TokenPairOutput } from './types';
 
 export interface IJwtGenerator {
   generateTokenPair(payload: GenerateTokenPairInput): TokenPairOutput;
+
+  generateAccessToken(payload: AccessTokenPayload): string;
 
   verifyAccessToken(token: string): any;
 
@@ -15,5 +17,11 @@ export interface IHashGenerator {
 }
 
 export interface ICodeGenerator {
+  filterObject(obj: { [key: string]: any }, filterData: FilterData): { [key: string]: any };
+
   generatePhoneVerificationCode(): string;
+
+  cleanToken(token: string): string;
+
+  generateRandomToken(): string;
 }

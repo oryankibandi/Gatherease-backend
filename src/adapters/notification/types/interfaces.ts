@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { Organizer, User } from '@prisma/client';
 
 export interface VerificationSmsInput {
   recepientPhone: string;
@@ -8,4 +8,8 @@ export interface VerificationSmsInput {
 
 export interface WelcomeSmsInput {
   user: User;
+}
+
+export interface OrganizerWelcomeSmsInput {
+  organizer: Organizer;
 }

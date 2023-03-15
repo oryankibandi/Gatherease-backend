@@ -14,6 +14,8 @@ import {
 } from './types';
 
 export interface IUserRepository {
+  updateLastLogin(userId: string): Promise<User>;
+
   getUserById(userId: string): Promise<User | null>;
 
   getUserByEmail(email: string): Promise<User | null>;
@@ -30,6 +32,8 @@ export interface IUserRepository {
 }
 
 export interface IOrganizerRepository {
+  updateLastLogin(organizerId: string): Promise<Organizer>;
+
   getOrganizerById(organizerId: string): Promise<Organizer | null>;
 
   getOrganizerByEmail(email: string): Promise<Organizer | null>;
@@ -41,6 +45,8 @@ export interface IOrganizerRepository {
   createProfile(data: CreateProfileInput): Promise<Organizer>;
 
   updateVerificationStatus(organizerId: string, isVerified: boolean): Promise<Profile>;
+
+  getOrganizerByPhone(phone: string): Promise<Organizer | null>;
 }
 
 export interface IVenueRepository {
@@ -106,7 +112,11 @@ export interface ITokenRepository {
 
   getToken(token: string): Promise<Token | null>;
 
+  getRefreshToken(refreshToken: string): Promise<Token | null>;
+
   getUserTokens(ownerId: string): Promise<Token[]>;
+
+  updateAccessToken(tokenId: string, newToken: string): Promise<Token>;
 
   deleteUserTokens(ownerId: string): Promise<void>;
 }

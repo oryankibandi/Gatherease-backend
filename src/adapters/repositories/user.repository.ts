@@ -50,6 +50,13 @@ export default class UserRepository implements IUserRepository {
     });
   }
 
+  async updateLastLogin(userId: string): Promise<User> {
+    return this.client.user.update({
+      where: { id: userId },
+      data: { lastLogin: new Date(Date.now()) },
+    });
+  }
+
   async updateVerificationStatus(userId: string, isVerified: boolean): Promise<User> {
     return this.client.user.update({
       where: { id: userId },

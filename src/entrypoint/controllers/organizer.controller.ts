@@ -1,23 +1,26 @@
 import { Request, Response } from 'express';
 import {
-  userConfirmationValidation,
-  userLoginValidation,
-  userRegistrationValidation,
-} from '../../validators/user.validator';
-import { userAuthService } from '../../services/user';
+  organizerRegistrationValidation,
+  organizerConfirmationValidation,
+  organizerLoginValidation,
+  organizerRefreshTokenValidation,
+} from '../../validators/organizer.validator';
 import { ServiceError } from '../../services/exceptions';
-import { codeGenerator } from '../../utils';
+import { organizerAuthService } from '../../services/organizer';
+import { codeGenerator, jwtGenerator } from '../../utils';
 
-export async function registerUser(req: Request, res: Response) {
-  const { error } = userRegistrationValidation(req.body);
+export async function registerOrganizer(req: Request, res: Response) {
+  const { error } = organizerRegistrationValidation(req.body);
 
-  if (error)
+  if (error) {
     return res.status(400).json({
       message: error.details[0].message,
     });
+  }
 
   try {
-    const newUser = await userAuthService.registerUser(req.body);
+    const newOrganizer = organizerAuthService.registerOrganizer(req.body);
+
     return res.status(200).json({
       message: 'Verfification code sent.',
     });
@@ -34,16 +37,17 @@ export async function registerUser(req: Request, res: Response) {
   }
 }
 
-export async function userConfirmation(req: Request, res: Response) {
-  const { error } = userConfirmationValidation(req.body);
+export async function organizerConfirmation(req: Request, res: Response) {
+  const { error } = organizerConfirmationValidation(req.body);
 
-  if (error)
+  if (error) {
     return res.status(400).json({
       message: error.details[0].message,
     });
+  }
 
   try {
-    const verified = await userAuthService.userConfirmation(req.body);
+    await organizerAuthService.organizerConfirmation(req.body);
 
     return res.status(200).json({
       message: 'confirmation successful. Please sign in.',
@@ -61,8 +65,8 @@ export async function userConfirmation(req: Request, res: Response) {
   }
 }
 
-export async function userLogin(req: Request, res: Response) {
-  const { error } = userLoginValidation(req.body);
+export async function organizerLogin(req: Request, res: Response) {
+  const { error } = organizerLoginValidation(req.body);
 
   if (error) {
     return res.status(400).json({
@@ -71,13 +75,13 @@ export async function userLogin(req: Request, res: Response) {
   }
 
   try {
-    const { accessToken, refreshToken, user } = await userAuthService.authenticateUser(req.body);
+    const { accessToken, refreshToken, organizer } = await organizerAuthService.authenticateOrganizer(req.body);
 
     res.cookie('x-refresh-token', refreshToken);
     return res.status(200).json({
       accessToken,
       refreshToken,
-      user: codeGenerator.filterObject(user, { exclude: ['id', 'password'] }),
+      user: codeGenerator.filterObject(organizer, { exclude: ['id', 'password'] }),
     });
   } catch (error) {
     if (error instanceof ServiceError) {
@@ -92,7 +96,7 @@ export async function userLogin(req: Request, res: Response) {
   }
 }
 
-export async function userRefreshToken(req: Request, res: Response) {
+export async function organizerRefreshToken(req: Request, res: Response) {
   const payload = req.cookies['x-refresh-token'];
 
   if (!payload)
@@ -101,7 +105,7 @@ export async function userRefreshToken(req: Request, res: Response) {
     });
 
   try {
-    const newRefreshToken = await userAuthService.refreshUserToken(payload);
+    const newRefreshToken = await organizerAuthService.refreshOrganizerToken(payload);
 
     return res.status(200).json({
       message: 'success',

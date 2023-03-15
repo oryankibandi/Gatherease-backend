@@ -63,7 +63,8 @@ export interface UpdateOrganizerProfileInput {
 }
 
 export interface CreateEventInput {
-  name: string;
+  title: string;
+  description: string;
   venueId: string;
   categoryId: string;
   isPublic?: boolean;

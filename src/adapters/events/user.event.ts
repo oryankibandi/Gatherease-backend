@@ -1,7 +1,7 @@
 import { User } from '@prisma/client';
 import { EventSubscriber, On } from 'event-dispatch';
 import { smsNotificationService } from '../notification';
-import { OnUserConfirmationInput, OnUserRegistrationInput } from './types/types';
+import { OnUserConfirmationInput, OnUserRegistrationInput, onOrganizerRegistrationInput } from './types/types';
 
 @EventSubscriber()
 export default class UserEventSubscriber {

@@ -25,11 +25,24 @@ export default class TokenRepository implements ITokenRepository {
     });
   }
 
+  async getRefreshToken(refreshToken: string): Promise<Token | null> {
+    return this.client.token.findUnique({
+      where: { refreshToken },
+    });
+  }
+
   async getUserTokens(ownerId: string): Promise<Token[]> {
     return this.client.token.findMany({
       where: {
         ownerId,
       },
+    });
+  }
+
+  async updateAccessToken(tokenId: string, newToken: string): Promise<Token> {
+    return this.client.token.update({
+      where: { id: tokenId },
+      data: { token: newToken },
     });
   }
 

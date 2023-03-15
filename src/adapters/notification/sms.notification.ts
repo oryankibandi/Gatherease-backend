@@ -1,5 +1,5 @@
 import { ITwilioSms } from '../../../lib/twilio/types/interfaces';
-import { VerificationSmsInput, WelcomeSmsInput } from './types/interfaces';
+import { OrganizerWelcomeSmsInput, VerificationSmsInput, WelcomeSmsInput } from './types/interfaces';
 
 export default class SMSNotification {
   public static inject = ['twilioSmsService'] as const;
@@ -16,5 +16,11 @@ export default class SMSNotification {
     const message = `Welcome to the GatherEase community ${data.user.firstName}. Visit our homepage https://www.gatherease.com to see what event is happening near you.`;
 
     return this.twilioSmsService.sendSMS(message, data.user.phone);
+  }
+
+  async sendOrganizerWelcomeSms(data: OrganizerWelcomeSmsInput) {
+    const message = `Welcome to the GatherEase community ${data.organizer.fullName}. Visit our homepage https://www.gatherease.com to create an event and start sending out invites.`;
+
+    return this.twilioSmsService.sendSMS(message, data.organizer.phone);
   }
 }

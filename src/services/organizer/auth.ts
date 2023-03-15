@@ -1,7 +1,17 @@
-import { ITokenRepository, IUserRepository, IVerify } from '../../adapters/repositories/types/interfaces';
+import {
+  IOrganizerRepository,
+  IProfileRepositiory,
+  ITokenRepository,
+  IVerify,
+} from '../../adapters/repositories/types/interfaces';
 import { ICodeGenerator, IHashGenerator, IJwtGenerator } from '../../utils/types/interfaces';
-import { AuthenticateUserOutput, UserConfirmationInput, UserLoginInput, UserRegistrationInput } from '../types/types';
-import { User } from '@prisma/client';
+import {
+  AuthenticateOrganizerOutput,
+  OrganizerConfirmationInput,
+  OrganizerLoginInput,
+  OrganizerRegistrationInput,
+  RefreshOrganizerInput,
+} from '../types/types';
 import {
   InvalidCode,
   InvalidCredentials,
@@ -13,39 +23,40 @@ import {
 } from '../exceptions';
 import eventDispatcher from '../../adapters/events';
 
-export class UserAuthService {
+export default class OrganizerAuthService {
   public static inject = [
-    'jwtGeneratorService',
-    'userRepo',
-    'hashGeneratorService',
+    'organizerRepo',
     'verifyRepo',
-    'codeGeneratorService',
+    'profileRepo',
     'tokenRepo',
+    'jwtGeneratorService',
+    'hashGeneratorService',
+    'codeGeneratorService',
   ] as const;
 
   constructor(
-    private readonly jwtGeneratorService: IJwtGenerator,
-    private readonly userRepo: IUserRepository,
-    private readonly hashGeneratorService: IHashGenerator,
+    private readonly organizerRepo: IOrganizerRepository,
     private readonly verifyRepo: IVerify,
-    private readonly codeGeneratorService: ICodeGenerator,
-    private readonly tokenRepo: ITokenRepository
+    private readonly profileRepo: IProfileRepositiory,
+    private readonly tokenRepo: ITokenRepository,
+    private readonly jwtGeneratorService: IJwtGenerator,
+    private readonly hashGeneratorService: IHashGenerator,
+    private readonly codeGeneratorService: ICodeGenerator
   ) {}
 
-  async registerUser(data: UserRegistrationInput): Promise<User> {
-    // check existing user
-    const existingUserEmail = await this.userRepo.getUserByEmail(data.email);
-    const existingUserPhone = await this.userRepo.getUserByEmail(data.email);
+  async registerOrganizer(data: OrganizerRegistrationInput) {
+    // check existing organizer
+    const existingEmail = await this.organizerRepo.getOrganizerByEmail(data.email);
+    const existingPhone = await this.organizerRepo.getOrganizerByPhone(data.phone);
 
-    if (existingUserEmail) throw new UserExistsError(`Email ${data.email} is already registered`);
-    if (existingUserPhone) throw new UserExistsError(`Email ${data.phone} is already registered`);
+    if (existingEmail) throw new UserExistsError(`Email ${data.email} is already registered`);
+    if (existingPhone) throw new UserExistsError(`Email ${data.phone} is already registered`);
 
     // hash password
-
     const password = await this.hashGeneratorService.hashPassword(data.password);
 
-    // create user in DB
-    const newUser = await this.userRepo.createUser({
+    // create organizer in DB
+    const newOrganizer = await this.organizerRepo.createOrganizer({
       email: data.email,
       firstName: data.firstName,
       lastName: data.lastName,
@@ -58,69 +69,70 @@ export class UserAuthService {
     const verificationCode = this.codeGeneratorService.generatePhoneVerificationCode();
 
     // store verification code in DB
-    await this.verifyRepo.createVerification({ code: verificationCode, ownerId: newUser.id });
+    await this.verifyRepo.createVerification({ code: verificationCode, ownerId: newOrganizer.id });
 
     // send verification code
-    eventDispatcher.dispatch('onUserRegistration', { user: newUser, code: verificationCode });
+    eventDispatcher.dispatch('onUserRegistration', { user: newOrganizer, code: verificationCode });
 
-    return newUser;
+    return newOrganizer;
   }
 
-  async userConfirmation(data: UserConfirmationInput) {
+  async organizerConfirmation(data: OrganizerConfirmationInput) {
     // retrieve user
 
-    const existingUser = await this.userRepo.getUserByPhone(data.phone);
-    if (!existingUser) throw new UserNotFound(`Phone number ${data.phone} is not registered`);
+    const existingOrganizer = await this.organizerRepo.getOrganizerByPhone(data.phone);
+    if (!existingOrganizer) throw new UserNotFound(`Phone number ${data.phone} is not registered`);
 
-    if (existingUser.isVerified) throw new UserAlreadyVerified('User is already verified');
+    const organizerProfile = await this.profileRepo.getOrganizerProfile(existingOrganizer.id);
+    if (organizerProfile?.isVerified) throw new UserAlreadyVerified('User is already verified');
 
-    const verify = await this.verifyRepo.getVerification(existingUser.id);
+    const verify = await this.verifyRepo.getVerification(existingOrganizer.id);
     if (!verify) throw new VerificationNotFound('Verification code not found');
 
     if (verify.code !== data.code) {
       throw new InvalidCode('Invalid code');
     }
     // delete code and mark user as verified
-    await this.verifyRepo.deleteVerfication(existingUser.id);
+    await this.verifyRepo.deleteVerfication(existingOrganizer.id);
 
-    await this.userRepo.updateVerificationStatus(existingUser.id, true);
+    await this.organizerRepo.updateVerificationStatus(existingOrganizer.id, true);
 
-    eventDispatcher.dispatch('onUserConfirmation', { user: existingUser });
+    eventDispatcher.dispatch('onOrganizerConfirmation', { organizer: existingOrganizer });
 
     return true;
   }
 
-  async authenticateUser(data: UserLoginInput): Promise<AuthenticateUserOutput> {
-    const existingUser = await this.userRepo.getUserByEmail(data.email);
+  async authenticateOrganizer(data: OrganizerLoginInput): Promise<AuthenticateOrganizerOutput> {
+    const existingOrganizer = await this.organizerRepo.getOrganizerByEmail(data.email);
 
-    if (!existingUser) throw new UserNotFound(`Email ${data.email} not registered`);
+    if (!existingOrganizer) throw new UserNotFound(`Email ${data.email} not registered`);
 
-    const validPassword = await this.hashGeneratorService.validatePassword(data.password, existingUser.password);
+    const validPassword = await this.hashGeneratorService.validatePassword(data.password, existingOrganizer.password);
 
     if (!validPassword) throw new InvalidCredentials('Invalid email or password');
 
     const organizerAccessToken = this.codeGeneratorService.generateRandomToken();
     const organizerRefreshToken = this.codeGeneratorService.generateRandomToken();
     const accessTokenPayload = {
-      ownerId: existingUser.id,
-      role: existingUser.role,
+      ownerId: existingOrganizer.id,
+      role: existingOrganizer.role,
       accessToken: organizerAccessToken,
     };
     const refreshTokenPayload = {
-      ownerId: existingUser.id,
+      ownerId: existingOrganizer.id,
       refreshToken: organizerRefreshToken,
-      role: existingUser.role,
+      role: existingOrganizer.role,
     };
 
     // store tokens in DB
     await this.tokenRepo.createToken({
-      ownerId: existingUser.id,
+      ownerId: existingOrganizer.id,
       token: organizerAccessToken,
       refreshToken: organizerRefreshToken,
     });
 
     //update lastLogin
-    this.userRepo.updateLastLogin(existingUser.id);
+    this.organizerRepo.updateLastLogin(existingOrganizer.id);
 
     // Generate jwt tokens
     const { accessToken, refreshToken } = this.jwtGeneratorService.generateTokenPair({
@@ -131,11 +143,11 @@ export class UserAuthService {
     return {
       accessToken,
       refreshToken,
-      user: existingUser,
+      organizer: existingOrganizer,
     };
   }
 
-  async refreshUserToken(refershToken: string) {
+  async refreshOrganizerToken(refershToken: string) {
     // decode token
     const decodedToken = await this.jwtGeneratorService.verifyRefreshToken(refershToken);
 
