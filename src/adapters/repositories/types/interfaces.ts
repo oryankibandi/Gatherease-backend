@@ -1,4 +1,4 @@
-import { Guest, Organizer, Profile, User, Venue, Event, Category, Token, Verify } from '@prisma/client';
+import { Guest, Organizer, Profile, User, Venue, Event, Category, Token, Verify, Image } from '@prisma/client';
 import {
   CreateEventInput,
   CreateGuestInput,
@@ -8,6 +8,8 @@ import {
   CreateUserInput,
   CreateVenueInput,
   CreateVerifyInput,
+  ImageDataInput,
+  SearchEventRepoInput,
   UpdateEventInput,
   UpdateOrganizerProfileInput,
   UpdateVenueInput,
@@ -85,6 +87,10 @@ export interface IEventRepository {
   searchEventByCategory(categoryId: string): Promise<Event[]>;
 
   searchEventByStatus(isPublic: boolean): Promise<Event[]>;
+
+  searchEvents(data: SearchEventRepoInput): Promise<Event[]>;
+
+  getCount(): Promise<number>;
 }
 
 export interface IGuestRepository {
@@ -129,4 +135,10 @@ export interface IVerify {
   updateVerification(ownerId: string, code: string): Promise<Verify>;
 
   deleteVerfication(ownerId: string): Promise<any>;
+}
+
+export interface IImageRepo {
+  createImage(data: ImageDataInput): Promise<Image>;
+
+  deleteImage(imageId: string): Promise<void>;
 }

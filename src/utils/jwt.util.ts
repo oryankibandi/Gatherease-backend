@@ -22,11 +22,11 @@ export default class JwtGenerator implements IJwtGenerator {
     });
   }
 
-  verifyAccessToken(token: string) {
+  verifyAccessToken(token: string): JwtPayload {
     try {
       const decoded = jwt.verify(token, appConfig.jwt.ACCESS_TOKEN_SECRET);
 
-      return decoded;
+      return decoded as JwtPayload;
     } catch (error) {
       throw new InvalidToken('Invalid token');
     }

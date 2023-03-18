@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import userRoutes from '../entrypoint/routes/user.routes';
 import organizerRoutes from '../entrypoint/routes/organizer.routes';
+import eventRoutes from '../entrypoint/routes/event.routes';
+import { decodeAccessTokenMiddleware } from '../entrypoint/middleware/auth';
 
 export default function routeSetup(app: Application) {
   app.use(morgan('combined'));
@@ -23,4 +25,8 @@ export default function routeSetup(app: Application) {
   app.use('/api/v1/user', userRoutes);
 
   app.use('/api/v1/organizer', organizerRoutes);
+
+  app.use(decodeAccessTokenMiddleware);
+
+  app.use('/api/v1/event', eventRoutes);
 }
