@@ -14,6 +14,10 @@ router.delete('/:eventId', grantAccess('deleteOwn', 'event'), eventController.de
 
 router.get('/:eventId', grantAccess('readAny', 'event'), eventController.getEvent);
 
+router.post('/rsvp', grantAccess('createOwn', 'rsvp'), eventController.rsvpToEvent);
+
+router.get('/guestList/:eventId', grantAccess('readOwn', 'guestList'), eventController.getGuestList);
+
 router.post(
   '/upload',
   grantAccess('create', 'eventImage'),

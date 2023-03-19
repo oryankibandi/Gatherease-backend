@@ -16,7 +16,7 @@ export class DeleteEventError extends DatabaseError {
   }
 }
 
-export class DeleteGuetError extends DatabaseError {
+export class DeleteGuestError extends DatabaseError {
   message;
   constructor(message: string) {
     super();

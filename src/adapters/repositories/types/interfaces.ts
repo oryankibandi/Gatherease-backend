@@ -94,7 +94,7 @@ export interface IEventRepository {
 }
 
 export interface IGuestRepository {
-  getGuest(guestId: string): Promise<Guest | null>;
+  getGuest(guestId: string): Promise<(Guest & { user: User; event: Event }) | null>;
 
   deleteGuest(guestId: string): Promise<void>;
 
@@ -102,7 +102,9 @@ export interface IGuestRepository {
 
   markGuestAsAttended(guestId: string): Promise<Guest>;
 
-  retrieveGuestList(eventId: string): Promise<Guest[]>;
+  retrieveGuestList(eventId: string): Promise<(Guest & { user: User })[]>;
+
+  getGuestByEventAndUser(eventId: string, userId: string): Promise<Guest | null>;
 }
 
 export interface ICategortRepository {

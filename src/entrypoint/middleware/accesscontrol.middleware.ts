@@ -10,6 +10,9 @@ const user = ROLE.USER;
 ac.grant(organizer).resource('event').create().readAny().updateOwn().deleteOwn().readOwn();
 ac.grant(organizer).resource('eventImage').create().deleteOwn().updateOwn().readAny();
 ac.grant(user).resource('event').readAny();
+ac.grant(user).resource('rsvp').createOwn();
+ac.grant(organizer).resource('guest').readOwn().deleteOwn().updateOwn();
+ac.grant(organizer).resource('guestList').readOwn();
 
 export function grantAccess(action: keyof Query, resource: string) {
   return (req: Request, res: Response, next: NextFunction) => {

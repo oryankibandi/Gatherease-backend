@@ -63,7 +63,28 @@ export class EventNotFound extends ServiceError {
   }
 }
 
+export class GuestNotFound extends ServiceError {
+  constructor(message: string) {
+    super();
+    this.message = message;
+  }
+}
+
+export class UserAlreadyRsvp extends ServiceError {
+  constructor(message: string) {
+    super();
+    this.message = message;
+  }
+}
+
 export class UnauthorizedAction extends ServiceError {
+  constructor(message: string) {
+    super();
+    this.message = message;
+  }
+}
+
+export class Forbidden extends ServiceError {
   constructor(message: string) {
     super();
     this.message = message;

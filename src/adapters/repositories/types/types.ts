@@ -1,4 +1,4 @@
-import { ROLE } from '@prisma/client';
+import { Guest, ROLE, User } from '@prisma/client';
 import { SearchEventInput } from '../../../services/types/types';
 
 export interface CreateUserInput {

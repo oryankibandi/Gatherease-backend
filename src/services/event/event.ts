@@ -1,23 +1,23 @@
-import { IEventRepository, IOrganizerRepository } from '../../adapters/repositories/types/interfaces';
-import { ICloudinaryImageService } from '../../../lib/cloudinary/types/interfaces';
-import { Event } from '.prisma/client';
+import { IEventRepository, IGuestRepository, IOrganizerRepository } from '../../adapters/repositories/types/interfaces';
+import { Event, Guest, Organizer, User } from '.prisma/client';
 import {
   CreateEventInput,
   DeleteEventInput,
+  GetGuestOutput,
+  RsvpInputData,
   SearchEventInput,
   SearchEventsOutput,
   UpdateEventInput,
 } from '../types/types';
-import { ICodeGenerator } from '../../utils/types/interfaces';
-import { EventNotFound, ImageUploadError, UnauthorizedAction } from '../exceptions';
+import { EventNotFound, Forbidden, GuestNotFound, UnauthorizedAction, UserAlreadyRsvp } from '../exceptions';
+import { ICodeGenerator } from 'src/utils/types/interfaces';
 
 export default class EventService {
-  public static inject = ['eventRepo', 'organizerRepo', 'cloudinaryImageService', 'codeGenerator'] as const;
+  public static inject = ['eventRepo', 'guestRepo', 'codeGenerator'] as const;
 
   constructor(
     private readonly eventRepo: IEventRepository,
-    private readonly organizerRepo: IOrganizerRepository,
-    private readonly cloudinaryImageService: ICloudinaryImageService,
+    private readonly guestRepo: IGuestRepository,
     private readonly codeGenerator: ICodeGenerator
   ) {}
 
@@ -109,5 +109,77 @@ export default class EventService {
       totalPages,
       data: events,
     };
+  }
+
+  async rsvp(data: RsvpInputData): Promise<Guest> {
+    const existingEvent = await this.getEvent(data.eventId);
+
+    const existingGuest = await this.guestRepo.getGuestByEventAndUser(data.eventId, data.user.id);
+
+    if (existingGuest) throw new UserAlreadyRsvp('You have already RSVP to this event');
+
+    // create guest
+    const newGuest = await this.guestRepo.createGuest({ userId: data.user.id, eventId: data.eventId });
+
+    return newGuest;
+  }
+
+  async getGuest(guestId: string, organizer: Organizer): Promise<any> {
+    const retrievedGuest = await this.guestRepo.getGuest(guestId);
+
+    if (!retrievedGuest) throw new GuestNotFound('Guest not found');
+
+    if (retrievedGuest.event.organizerId !== organizer.id) {
+      throw new Forbidden('Forbidden');
+    }
+
+    return {
+      id: retrievedGuest.id,
+      userId: retrievedGuest.userId,
+      attended: retrievedGuest.attended,
+      user: this.codeGenerator.filterObject(retrievedGuest.user, {
+        include: ['firstName', 'lastName', 'email', 'phone'],
+      }),
+    };
+  }
+
+  async deleteGuest(guestId: string, organizer: Organizer): Promise<true> {
+    const guest = await this.getGuest(guestId, organizer);
+
+    await this.guestRepo.deleteGuest(guestId);
+
+    return true;
+  }
+
+  async getGuestList(
+    eventId: string,
+    organizer: Organizer
+  ): Promise<{ count: number; guests: { [key: string]: any }[] }> {
+    const event = await this.getEvent(eventId);
+    if (event.organizerId !== organizer.id) throw new Forbidden('Forbidden resource');
+
+    const guests = await this.guestRepo.retrieveGuestList(eventId);
+
+    const filteredGuests = guests.map((guest) => {
+      let user = this.codeGenerator.filterObject(guest.user, {
+        include: ['firstName', 'lastName', 'email', 'phone'],
+      });
+
+      return {
+        ...guest,
+        user,
+      };
+    });
+
+    return {
+      count: filteredGuests.length,
+      guests: filteredGuests,
+    };
+  }
+
+  async markGuestAtAttended(guestId: string, organizer: Organizer): Promise<Guest> {
+    const guest = await this.getGuest(guestId, organizer);
+
+    return this.guestRepo.markGuestAsAttended(guestId);
   }
 }

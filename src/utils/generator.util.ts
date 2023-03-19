@@ -38,7 +38,7 @@ export class CodeGenerator implements ICodeGenerator {
     if (filterData.include) {
       newObj = {};
       filterData.include.forEach((field) => {
-        newObj[field] = obj.field;
+        newObj[field] = obj[field];
       });
     }
 

@@ -1,14 +1,13 @@
 import EventService from './event';
 import ImageService from './images';
 import { createInjector } from 'typed-inject';
-import { eventRepo, organizerRepo, imageRepo } from '../../adapters/repositories';
+import { eventRepo, guestRepo, imageRepo } from '../../adapters/repositories';
 import { cloudinaryImageService } from '../../../lib/cloudinary';
 import { codeGenerator } from '../../utils';
 
 const eventServiceInjector = createInjector()
   .provideValue('eventRepo', eventRepo)
-  .provideValue('organizerRepo', organizerRepo)
-  .provideValue('cloudinaryImageService', cloudinaryImageService)
+  .provideValue('guestRepo', guestRepo)
   .provideValue('codeGenerator', codeGenerator);
 const imageServiceInjector = createInjector()
   .provideValue('imageRepo', imageRepo)
