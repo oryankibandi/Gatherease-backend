@@ -24,4 +24,6 @@ export interface ICodeGenerator {
   cleanToken(token: string): string;
 
   generateRandomToken(): string;
+
+  generatePublicId(fileName: string, folders: string[]): string;
 }

@@ -1,4 +1,5 @@
 import { ROLE } from '@prisma/client';
+import { SearchEventInput } from '../../../services/types/types';
 
 export interface CreateUserInput {
   firstName: string;
@@ -64,6 +65,7 @@ export interface UpdateOrganizerProfileInput {
 
 export interface CreateEventInput {
   title: string;
+  imageUrl?: string;
   description: string;
   venueId: string;
   categoryId: string;
@@ -75,11 +77,15 @@ export interface CreateEventInput {
 }
 
 export interface UpdateEventInput {
-  name?: string;
+  title?: string;
+  description?: string;
+  imageUrl?: string;
+  venueId?: string;
+  categoryId?: string;
   isPublic?: boolean;
   day?: string;
   date?: Date;
-  venueId?: string;
+  city?: string;
 }
 
 export interface CreateGuestInput {
@@ -96,4 +102,16 @@ export interface CreateTokenInput {
 export interface CreateVerifyInput {
   code: string;
   ownerId: string;
+}
+
+export interface ImageDataInput {
+  ownerId: string;
+  imageUrl: string;
+  tag: string;
+}
+
+export interface SearchEventRepoInput {
+  filters: SearchEventInput;
+  limit: number;
+  page: number;
 }

@@ -2,6 +2,7 @@ import { randomInt, randomUUID } from 'crypto';
 import { ICodeGenerator } from './types/interfaces';
 import appConfig from '../config';
 import { FilterData } from './types/types';
+import path from 'path';
 
 export class CodeGenerator implements ICodeGenerator {
   phoneCodeLength = parseInt(appConfig.app.VERIFICATION_CODE_LENGTH);
@@ -42,5 +43,14 @@ export class CodeGenerator implements ICodeGenerator {
     }
 
     return newObj;
+  }
+
+  generatePublicId(fileName: string, folders: string[]): string {
+    const ext = path.extname(fileName);
+    const newFileName = this.generateRandomToken() + ext;
+
+    folders.push(newFileName);
+
+    return path.join(...folders.map((e) => e));
   }
 }

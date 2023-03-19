@@ -48,3 +48,24 @@ export class InvalidToken extends ServiceError {
     this.message = message;
   }
 }
+
+export class ImageUploadError extends ServiceError {
+  constructor(message: string) {
+    super();
+    this.message = message;
+  }
+}
+
+export class EventNotFound extends ServiceError {
+  constructor(message: string) {
+    super();
+    this.message = message;
+  }
+}
+
+export class UnauthorizedAction extends ServiceError {
+  constructor(message: string) {
+    super();
+    this.message = message;
+  }
+}

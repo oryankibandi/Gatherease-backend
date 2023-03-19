@@ -22,4 +22,10 @@ export const prodConfig = {
   hashing: {
     SALT_ROUNDS: getEnv('SALT_ROUNDS'),
   },
+  cloudinary: {
+    CLOUDINARY_API_KEY: getEnv('CLOUDINARY_API_KEY'),
+    CLOUDINARY_API_SECRET: getEnv('CLOUDINARY_API_SECRET'),
+    CLOUDINARY_URL: getEnv('CLOUDINARY_URL'),
+    CLOUDINARY_CLOUD_NAME: getEnv('CLOUDINARY_CLOUD_NAME'),
+  },
 };

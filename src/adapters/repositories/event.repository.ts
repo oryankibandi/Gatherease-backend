@@ -1,6 +1,6 @@
 import { PrismaClient, Event } from '@prisma/client';
 import { IEventRepository } from './types/interfaces';
-import { CreateEventInput, UpdateEventInput, UpdateVenueInput } from './types/types';
+import { CreateEventInput, SearchEventRepoInput, UpdateEventInput, UpdateVenueInput } from './types/types';
 import { DeleteEventError } from './exceptions';
 
 export default class EventRepository implements IEventRepository {
@@ -13,6 +13,7 @@ export default class EventRepository implements IEventRepository {
   async createEvent(data: CreateEventInput): Promise<Event> {
     return this.client.event.create({
       data,
+      include: { venue: true, category: true },
     });
   }
 
@@ -43,7 +44,7 @@ export default class EventRepository implements IEventRepository {
     });
   }
 
-  searchEventByCity(city: string, limit = 10): Promise<Event[]> {
+  async searchEventByCity(city: string, limit = 10): Promise<Event[]> {
     return this.client.event.findMany({
       where: {
         city: {
@@ -55,7 +56,7 @@ export default class EventRepository implements IEventRepository {
     });
   }
 
-  searchEventByVenue(venueId: string, limit = 10): Promise<Event[]> {
+  async searchEventByVenue(venueId: string, limit = 10): Promise<Event[]> {
     return this.client.event.findMany({
       where: {
         venueId: {
@@ -67,7 +68,7 @@ export default class EventRepository implements IEventRepository {
     });
   }
 
-  searchEventByCategory(categoryId: string, limit = 10): Promise<Event[]> {
+  async searchEventByCategory(categoryId: string, limit = 10): Promise<Event[]> {
     return this.client.event.findMany({
       where: {
         categoryId: {
@@ -79,12 +80,55 @@ export default class EventRepository implements IEventRepository {
     });
   }
 
-  searchEventByStatus(isPublic: boolean, limit = 10): Promise<Event[]> {
+  async searchEventByStatus(isPublic: boolean, limit = 10): Promise<Event[]> {
     return this.client.event.findMany({
       where: {
         isPublic,
       },
       take: limit,
     });
+  }
+
+  async searchEvents(data: SearchEventRepoInput): Promise<Event[]> {
+    return this.client.event.findMany({
+      where: {
+        AND: [
+          {
+            city: {
+              contains: data.filters.city ?? '',
+              mode: 'insensitive',
+            },
+          },
+          {
+            venue: {
+              name: {
+                contains: data.filters.venue ?? '',
+                mode: 'insensitive',
+              },
+            },
+          },
+          {
+            date: {
+              gte: data.filters.startDate,
+              lte: data.filters.endDate,
+            },
+          },
+          {
+            category: {
+              name: {
+                contains: data.filters.category ?? '',
+                mode: 'insensitive',
+              },
+            },
+          },
+        ],
+      },
+      take: data.limit,
+      skip: data.page,
+    });
+  }
+
+  async getCount(): Promise<number> {
+    return this.client.event.count();
   }
 }

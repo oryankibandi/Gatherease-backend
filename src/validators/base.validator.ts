@@ -31,3 +31,30 @@ export interface organizerRefreshTokenValidationInput {
   role: string;
   refreshToken: string;
 }
+
+export interface CreateEventInputValidation {
+  title: string;
+  description: string;
+  venueId: string;
+  categoryId: string;
+  isPublic: boolean;
+  day: string;
+  date: Date;
+  city: string;
+}
+
+export interface UpdateEventValidationInput {
+  eventId: string;
+  title?: string;
+  description?: string;
+  venueId?: string;
+  categoryId?: string;
+  isPublic?: boolean;
+  day?: string;
+  date?: Date;
+  city?: string;
+}
+
+export interface DeleteEventValidationInput {
+  eventId: string;
+}

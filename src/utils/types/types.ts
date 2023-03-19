@@ -25,3 +25,5 @@ export interface FilterData {
   include?: string[];
   exclude?: string[];
 }
+
+export type HashAlgorithms = 'sha256' | 'sha1';

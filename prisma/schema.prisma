@@ -17,7 +17,7 @@ model Venue {
   longitude String?  @db.VarChar(32)
   street    String   @db.VarChar(32)
   city      String   @db.VarChar(32)
-  imageUrl  String?  @db.VarChar(32)
+  imageUrl  String?
   country   String   @db.VarChar(32)
   createdAt DateTime @default(now())
   event     Event[]
@@ -74,6 +74,7 @@ model Event {
   id          String    @id @default(cuid())
   title       String
   description String
+  imageUrl    String?
   venue       Venue     @relation(fields: [venueId], references: [id])
   venueId     String
   category    Category  @relation(fields: [categoryId], references: [id])
@@ -120,6 +121,14 @@ model Verify {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   code      String   @db.VarChar(32)
+}
+
+model Image {
+  id        String   @id @default(cuid())
+  ownerId   String
+  createdAt DateTime @default(now())
+  imageUrl  String
+  tag       String   @db.VarChar(128)
 }
 
 enum ROLE {
