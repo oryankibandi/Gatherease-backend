@@ -3,7 +3,7 @@ import { EventImageInput } from '../types/types';
 import { ICodeGenerator } from '../../utils/types/interfaces';
 import { ICloudinaryImageService } from 'lib/cloudinary/types/interfaces';
 import { ImageUploadError } from '../exceptions';
-import logger from 'src/startup/logging';
+import logger from '../../startup/logging';
 
 export default class ImageService {
   public static inject = ['imageRepo', 'codeGenerator', 'cloudinaryImageService'] as const;

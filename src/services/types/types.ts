@@ -119,3 +119,20 @@ export interface SearchEventsOutput {
   totalPages?: number;
   data: Event[];
 }
+
+export interface RsvpInputData {
+  user: User;
+  eventId: string;
+}
+
+export interface GetGuestOutput {
+  id: string;
+  userId: string;
+  attended: boolean;
+  user: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+  };
+}

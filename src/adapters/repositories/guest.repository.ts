@@ -1,6 +1,6 @@
-import { Guest, PrismaClient } from '@prisma/client';
+import { Guest, PrismaClient, User, Event } from '@prisma/client';
 import { IGuestRepository } from './types/interfaces';
-import { DeleteGuetError } from './exceptions';
+import { DeleteGuestError } from './exceptions';
 import { CreateGuestInput } from './types/types';
 
 export default class GuestRepository implements IGuestRepository {
@@ -10,7 +10,7 @@ export default class GuestRepository implements IGuestRepository {
     this.client = prismaClient;
   }
 
-  async getGuest(guestId: string): Promise<Guest | null> {
+  async getGuest(guestId: string): Promise<(Guest & { user: User; event: Event }) | null> {
     return this.client.guest.findUnique({
       where: { id: guestId },
       include: {
@@ -20,11 +20,26 @@ export default class GuestRepository implements IGuestRepository {
     });
   }
 
+  async getGuestByEventAndUser(eventId: string, userId: string): Promise<Guest | null> {
+    return this.client.guest.findUnique({
+      where: {
+        user_event: {
+          userId,
+          eventId,
+        },
+      },
+    });
+  }
+
   async deleteGuest(guestId: string): Promise<void> {
     try {
-      await this.client.guest.delete;
+      await this.client.guest.delete({
+        where: {
+          id: guestId,
+        },
+      });
     } catch (error: any) {
-      throw new DeleteGuetError(error.message);
+      throw new DeleteGuestError(error.message);
     }
   }
 
@@ -43,10 +58,13 @@ export default class GuestRepository implements IGuestRepository {
     });
   }
 
-  async retrieveGuestList(eventId: string): Promise<Guest[]> {
+  async retrieveGuestList(eventId: string): Promise<(Guest & { user: User })[]> {
     return this.client.guest.findMany({
       where: {
         eventId,
+      },
+      include: {
+        user: true,
       },
     });
   }
