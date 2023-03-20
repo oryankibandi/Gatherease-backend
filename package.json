@@ -4,8 +4,8 @@
   "description": "Backend for GatherEase event planner",
   "main": "app.js",
   "scripts": {
-    "start": "node ./dist/app.js",
-    "start:prod": "NODE_ENV=production npm run build && npm start",
+    "start": "NODE_ENV=production node ./dist/app.js",
+    "start:prod": "npm run build && npm start",
     "start:dev": "NODE_ENV=development ts-node app.ts",
     "build": "tsc -b",
     "test": "echo \"Error: no test specified\" && exit 1"
