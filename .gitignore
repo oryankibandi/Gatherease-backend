@@ -287,3 +287,6 @@ readme.todo
 .env*
 !.env.example
 cert*/
+
+#test file
+test.ts
