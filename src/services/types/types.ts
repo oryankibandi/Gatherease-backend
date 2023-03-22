@@ -109,6 +109,7 @@ export interface SearchEventInput {
   endDate?: Date;
   isPublic?: string;
   category?: string;
+  organizerId?:string;
 }
 
 export interface SearchEventsOutput {

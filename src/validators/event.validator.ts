@@ -69,6 +69,7 @@ export function searchEventsValidation(data: SearchEventInput) {
     endDate: Joi.string(),
     isPublic: Joi.bool(),
     category: Joi.string(),
+    organizerId: Joi.string(),
   });
 
   return schema.validate(data);

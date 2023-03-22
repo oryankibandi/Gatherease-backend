@@ -121,6 +121,12 @@ export default class EventRepository implements IEventRepository {
               },
             },
           },
+          {
+            organizerId: {
+              contains: data.filters.organizerId ?? '',
+              mode: 'insensitive',
+            },
+          },
         ],
       },
       take: data.limit,
