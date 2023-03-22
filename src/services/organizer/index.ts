@@ -2,6 +2,7 @@ import OrganizerAuthService from './auth';
 import { createInjector } from 'typed-inject';
 import { organizerRepo, verifyRepo, profileRepo, tokenRepo } from '../../adapters/repositories';
 import { jwtGenerator, hashGenerator, codeGenerator } from '../../utils';
+import { OrganizerProfile } from './profile';
 
 const organizerAuthServiceInjector = createInjector()
   .provideValue('organizerRepo', organizerRepo)
@@ -14,4 +15,10 @@ const organizerAuthServiceInjector = createInjector()
 
 const organizerAuthService = organizerAuthServiceInjector.injectClass(OrganizerAuthService);
 
-export { organizerAuthService };
+const organizerProfileInjector = createInjector()
+  .provideValue('organizerRepo', organizerRepo)
+  .provideValue('codeGenerator', codeGenerator);
+
+const organizerProfileService = organizerProfileInjector.injectClass(OrganizerProfile);
+
+export { organizerAuthService, organizerProfileService };

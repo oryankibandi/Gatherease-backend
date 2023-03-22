@@ -1,4 +1,4 @@
-import { Event, Organizer, ROLE, User } from '@prisma/client';
+import { Event, Organizer, Profile, ROLE, User } from '@prisma/client';
 
 export interface UserRegistrationInput {
   firstName: string;
@@ -136,3 +136,17 @@ export interface GetGuestOutput {
     phone: string;
   };
 }
+
+// Organizer object without `id` and `password` fields and profile
+export type EncapOrganizerWithProfile = {
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  createdAt: Date;
+  lastLogin: Date | null;
+  profile: Profile;
+  profileId: string | null;
+  role: ROLE;
+} & Profile;

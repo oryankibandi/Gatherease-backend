@@ -1,4 +1,4 @@
-import { Guest, ROLE, User } from '@prisma/client';
+import { Guest, Organizer, Profile, ROLE, User } from '@prisma/client';
 import { SearchEventInput } from '../../../services/types/types';
 
 export interface CreateUserInput {
@@ -115,3 +115,9 @@ export interface SearchEventRepoInput {
   limit: number;
   page: number;
 }
+
+export type OrganizerWithProfile =
+  | (Organizer & {
+      profile: Profile | null;
+    })
+  | null;
