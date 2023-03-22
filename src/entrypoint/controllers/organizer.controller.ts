@@ -82,7 +82,7 @@ export async function organizerLogin(req: Request, res: Response) {
     return res.status(200).json({
       accessToken,
       refreshToken,
-      user: codeGenerator.filterObject(organizer, { exclude: ['id', 'password'] }),
+      user: codeGenerator.filterObject(organizer, { exclude: ['password'] }),
     });
   } catch (error) {
     if (error instanceof ServiceError) {
