@@ -9,6 +9,7 @@ import {
   CreateVenueInput,
   CreateVerifyInput,
   ImageDataInput,
+  OrganizerWithProfile,
   SearchEventRepoInput,
   UpdateEventInput,
   UpdateOrganizerProfileInput,
@@ -37,6 +38,8 @@ export interface IOrganizerRepository {
   updateLastLogin(organizerId: string): Promise<Organizer>;
 
   getOrganizerById(organizerId: string): Promise<Organizer | null>;
+
+  getOrganizerFullProfile(organizerId: string): Promise<OrganizerWithProfile>;
 
   getOrganizerByEmail(email: string): Promise<Organizer | null>;
 

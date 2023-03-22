@@ -6,8 +6,9 @@ import {
   organizerRefreshTokenValidation,
 } from '../../validators/organizer.validator';
 import { ServiceError } from '../../services/exceptions';
-import { organizerAuthService } from '../../services/organizer';
+import { organizerAuthService, organizerProfileService } from '../../services/organizer';
 import { codeGenerator, jwtGenerator } from '../../utils';
+import { Organizer } from '@prisma/client';
 
 export async function registerOrganizer(req: Request, res: Response) {
   const { error } = organizerRegistrationValidation(req.body);
@@ -111,6 +112,37 @@ export async function organizerRefreshToken(req: Request, res: Response) {
       message: 'success',
       data: {
         refreshToken: newRefreshToken,
+      },
+    });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(400).json({
+        message: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
+}
+
+export async function getOrganizerProfile(req: Request, res: Response) {
+  const organizer = req.user as Organizer;
+
+  if (!organizer) {
+    return res.status(400).json({
+      message: 'unauthorized',
+    });
+  }
+
+  try {
+    const organizerProfile = await organizerProfileService.getProfile(organizer.id);
+
+    return res.status(200).json({
+      message: 'success',
+      data: {
+        ...organizerProfile,
       },
     });
   } catch (error) {

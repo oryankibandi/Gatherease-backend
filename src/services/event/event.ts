@@ -10,7 +10,7 @@ import {
   UpdateEventInput,
 } from '../types/types';
 import { EventNotFound, Forbidden, GuestNotFound, UnauthorizedAction, UserAlreadyRsvp } from '../exceptions';
-import { ICodeGenerator } from 'src/utils/types/interfaces';
+import { ICodeGenerator } from '../../utils/types/interfaces';
 
 export default class EventService {
   public static inject = ['eventRepo', 'guestRepo', 'codeGenerator'] as const;

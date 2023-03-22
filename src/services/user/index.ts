@@ -2,6 +2,7 @@ import { createInjector } from 'typed-inject';
 import { UserAuthService } from './auth';
 import { jwtGenerator, codeGenerator, hashGenerator } from '../../utils';
 import { userRepo, verifyRepo, tokenRepo } from '../../adapters/repositories';
+import { Userprofile } from './profile';
 
 const userAuthServiceInjector = createInjector()
   .provideValue('jwtGeneratorService', jwtGenerator)
@@ -13,4 +14,10 @@ const userAuthServiceInjector = createInjector()
 
 const userAuthService = userAuthServiceInjector.injectClass(UserAuthService);
 
-export { userAuthService };
+const userProfileInjector = createInjector()
+  .provideValue('userRepo', userRepo)
+  .provideValue('codeGenerator', codeGenerator);
+
+const userProfileService = userProfileInjector.injectClass(Userprofile);
+
+export { userAuthService, userProfileService };
