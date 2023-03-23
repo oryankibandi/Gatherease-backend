@@ -22,6 +22,7 @@ import {
   VerificationNotFound,
 } from '../exceptions';
 import eventDispatcher from '../../adapters/events';
+import { IRedisClient } from '../../adapters/cache/types/interfaces';
 
 export default class OrganizerAuthService {
   public static inject = [
@@ -32,6 +33,7 @@ export default class OrganizerAuthService {
     'jwtGeneratorService',
     'hashGeneratorService',
     'codeGeneratorService',
+    'redisClientService',
   ] as const;
 
   constructor(
@@ -41,7 +43,8 @@ export default class OrganizerAuthService {
     private readonly tokenRepo: ITokenRepository,
     private readonly jwtGeneratorService: IJwtGenerator,
     private readonly hashGeneratorService: IHashGenerator,
-    private readonly codeGeneratorService: ICodeGenerator
+    private readonly codeGeneratorService: ICodeGenerator,
+    private readonly redisClientService: IRedisClient
   ) {}
 
   async registerOrganizer(data: OrganizerRegistrationInput) {
@@ -113,6 +116,10 @@ export default class OrganizerAuthService {
 
     const organizerAccessToken = this.codeGeneratorService.generateRandomToken();
     const organizerRefreshToken = this.codeGeneratorService.generateRandomToken();
+
+    // store token in DB
+    await this.redisClientService.setUser(organizerAccessToken, existingOrganizer);
+
     const accessTokenPayload = {
       ownerId: existingOrganizer.id,
       role: existingOrganizer.role,

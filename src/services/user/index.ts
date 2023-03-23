@@ -3,6 +3,7 @@ import { UserAuthService } from './auth';
 import { jwtGenerator, codeGenerator, hashGenerator } from '../../utils';
 import { userRepo, verifyRepo, tokenRepo } from '../../adapters/repositories';
 import { Userprofile } from './profile';
+import redisClientService from '../../adapters/cache';
 
 const userAuthServiceInjector = createInjector()
   .provideValue('jwtGeneratorService', jwtGenerator)
@@ -10,7 +11,8 @@ const userAuthServiceInjector = createInjector()
   .provideValue('codeGeneratorService', codeGenerator)
   .provideValue('verifyRepo', verifyRepo)
   .provideValue('userRepo', userRepo)
-  .provideValue('tokenRepo', tokenRepo);
+  .provideValue('tokenRepo', tokenRepo)
+  .provideValue('redisClientService', redisClientService);
 
 const userAuthService = userAuthServiceInjector.injectClass(UserAuthService);
 

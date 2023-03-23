@@ -12,6 +12,7 @@ import {
   VerificationNotFound,
 } from '../exceptions';
 import eventDispatcher from '../../adapters/events';
+import { IRedisClient } from '../../adapters/cache/types/interfaces';
 
 export class UserAuthService {
   public static inject = [
@@ -21,6 +22,7 @@ export class UserAuthService {
     'verifyRepo',
     'codeGeneratorService',
     'tokenRepo',
+    'redisClientService',
   ] as const;
 
   constructor(
@@ -29,7 +31,8 @@ export class UserAuthService {
     private readonly hashGeneratorService: IHashGenerator,
     private readonly verifyRepo: IVerify,
     private readonly codeGeneratorService: ICodeGenerator,
-    private readonly tokenRepo: ITokenRepository
+    private readonly tokenRepo: ITokenRepository,
+    private readonly redisClientService: IRedisClient
   ) {}
 
   async registerUser(data: UserRegistrationInput): Promise<User> {
@@ -99,24 +102,28 @@ export class UserAuthService {
 
     if (!validPassword) throw new InvalidCredentials('Invalid email or password');
 
-    const organizerAccessToken = this.codeGeneratorService.generateRandomToken();
-    const organizerRefreshToken = this.codeGeneratorService.generateRandomToken();
+    const userAccessToken = this.codeGeneratorService.generateRandomToken();
+    const userRefreshToken = this.codeGeneratorService.generateRandomToken();
+
+    // store user and AccessToken in Redis
+    await this.redisClientService.setUser(userAccessToken, existingUser);
+
     const accessTokenPayload = {
       ownerId: existingUser.id,
       role: existingUser.role,
-      accessToken: organizerAccessToken,
+      accessToken: userAccessToken,
     };
     const refreshTokenPayload = {
       ownerId: existingUser.id,
-      refreshToken: organizerRefreshToken,
+      refreshToken: userRefreshToken,
       role: existingUser.role,
     };
 
     // store tokens in DB
     await this.tokenRepo.createToken({
       ownerId: existingUser.id,
-      token: organizerAccessToken,
-      refreshToken: organizerRefreshToken,
+      token: userAccessToken,
+      refreshToken: userRefreshToken,
     });
 
     //update lastLogin
