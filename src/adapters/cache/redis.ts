@@ -3,6 +3,7 @@ import { createClient } from 'redis';
 import logger from '../../startup/logging';
 import { RedisClientType } from './types/types';
 import { IRedisClient } from './types/interfaces';
+import { UserNotFound } from '../../services/exceptions';
 
 export default class RedisClient implements IRedisClient {
   client: RedisClientType;
@@ -34,5 +35,17 @@ export default class RedisClient implements IRedisClient {
     if (!user) return null;
 
     return JSON.parse(user);
+  }
+
+  async deleteUser(token: string): Promise<boolean> {
+    try {
+      await this.client.del(token);
+
+      return true;
+    } catch (error) {
+      logger.error(error, 'Redis Error deleting user: ', error);
+
+      return false;
+    }
   }
 }

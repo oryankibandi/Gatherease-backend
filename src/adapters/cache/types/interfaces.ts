@@ -4,4 +4,6 @@ export interface IRedisClient {
   setUser(token: string, user: User | Organizer): Promise<boolean>;
 
   retrieveUser(token: string): Promise<User | Organizer | null>;
+
+  deleteUser(token: string): Promise<boolean>;
 }

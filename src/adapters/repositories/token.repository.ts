@@ -13,9 +13,9 @@ export default class TokenRepository implements ITokenRepository {
     });
   }
 
-  async deleteToken(id: string): Promise<void> {
+  async deleteToken(token: string): Promise<void> {
     await this.client.token.delete({
-      where: { id },
+      where: { token },
     });
   }
 
