@@ -6,6 +6,6 @@ export default async function connectDb() {
     await prismaClient.$connect();
     logger.info('Connected to DB');
   } catch (err) {
-    logger.error('Could not connect to DB');
+    logger.error('Could not connect to DB: ', err);
   }
 }
