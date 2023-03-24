@@ -10,9 +10,34 @@ import eventRoutes from '../entrypoint/routes/event.routes';
 import guestRoutes from '../entrypoint/routes/guest.routes';
 import { decodeAccessTokenMiddleware } from '../entrypoint/middleware/auth';
 
+helmet.contentSecurityPolicy({
+  useDefaults: true,
+  directives: {
+    'default-src': ['*'],
+    'font-src': ["'self'", 'external-website.com'],
+    // allowing styles from any website
+    'style-src': null,
+  },
+});
+
 export default function routeSetup(app: Application) {
   app.use(morgan('combined'));
-  app.use(helmet());
+  app.use(
+    helmet.contentSecurityPolicy({
+      useDefaults: true,
+      directives: {
+        'default-src': ['*'],
+        'font-src': ["'self'", '*'],
+        // allowing styles from any website
+        'style-src': null,
+        connectSrc: null,
+      },
+    })
+  );
+
+  app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
+  app.use(helmet.noSniff());
+
   app.use(cors());
   app.use(cookieParser());
   app.use(bodyParser.json());
