@@ -13,6 +13,10 @@ router.post('/login', userController.userLogin);
 
 router.get('/refresh', userController.userRefreshToken);
 
+router.post('/logout', decodeAccessTokenMiddleware, userController.logOutUser);
+
+router.post('/logout/all-devices', decodeAccessTokenMiddleware, userController.logOutFromAllDevices);
+
 router.get(
   '/profile',
   decodeAccessTokenMiddleware,

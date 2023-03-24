@@ -157,3 +157,61 @@ export async function getOrganizerProfile(req: Request, res: Response) {
     });
   }
 }
+
+export async function logOutOrganizer(req: Request, res: Response) {
+  const { user, token } = req;
+
+  if (!user || !token) {
+    return res.status(401).json({
+      message: 'Unauthorized',
+    });
+  }
+
+  try {
+    await organizerAuthService.logOut(user as Organizer, token);
+
+    res.clearCookie('x-refresh-token');
+    return res.status(200).json({
+      message: 'Logged out successfully',
+    });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(400).json({
+        message: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
+}
+
+export async function logOutFromAllDevices(req: Request, res: Response) {
+  const { user, token } = req;
+
+  if (!user || !token) {
+    return res.status(401).json({
+      message: 'Unauthorized',
+    });
+  }
+
+  try {
+    await organizerAuthService.logOutFromAllDevices(user as Organizer, token);
+
+    res.clearCookie('x-refresh-token');
+    return res.status(200).json({
+      message: 'Logged out successfully',
+    });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(400).json({
+        message: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
+}

@@ -153,3 +153,61 @@ export async function getUserProfile(req: Request, res: Response) {
     });
   }
 }
+
+export async function logOutUser(req: Request, res: Response) {
+  const { user, token } = req;
+
+  if (!user || !token) {
+    return res.status(401).json({
+      message: 'Unauthorized',
+    });
+  }
+
+  try {
+    await userAuthService.logOutUser(token);
+
+    res.clearCookie('x-refresh-token');
+    return res.status(200).json({
+      message: 'Logged out successfully',
+    });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(400).json({
+        message: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
+}
+
+export async function logOutFromAllDevices(req: Request, res: Response) {
+  const { user, token } = req;
+
+  if (!user || !token) {
+    return res.status(401).json({
+      message: 'Unauthorized',
+    });
+  }
+
+  try {
+    await userAuthService.logOutUserFromAllDevices(user as User);
+
+    res.clearCookie('x-refresh-token');
+    return res.status(200).json({
+      message: 'Logged out successfully',
+    });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(400).json({
+        message: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
+}

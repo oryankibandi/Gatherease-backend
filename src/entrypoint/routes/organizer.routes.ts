@@ -13,6 +13,10 @@ router.post('/login', organizerController.organizerLogin);
 
 router.get('/refresh', organizerController.organizerRefreshToken);
 
+router.post('/logout', decodeAccessTokenMiddleware, organizerController.logOutOrganizer);
+
+router.post('/logout/all-devices', decodeAccessTokenMiddleware, organizerController.logOutFromAllDevices);
+
 router.get(
   '/profile',
   decodeAccessTokenMiddleware,

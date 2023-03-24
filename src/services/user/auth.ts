@@ -1,7 +1,7 @@
 import { ITokenRepository, IUserRepository, IVerify } from '../../adapters/repositories/types/interfaces';
 import { ICodeGenerator, IHashGenerator, IJwtGenerator } from '../../utils/types/interfaces';
 import { AuthenticateUserOutput, UserConfirmationInput, UserLoginInput, UserRegistrationInput } from '../types/types';
-import { User } from '@prisma/client';
+import { Organizer, User } from '@prisma/client';
 import {
   InvalidCode,
   InvalidCredentials,
@@ -13,6 +13,7 @@ import {
 } from '../exceptions';
 import eventDispatcher from '../../adapters/events';
 import { IRedisClient } from '../../adapters/cache/types/interfaces';
+import logger from '../../startup/logging';
 
 export class UserAuthService {
   public static inject = [
@@ -168,5 +169,25 @@ export class UserAuthService {
     const newJwtRefreshToken = this.jwtGeneratorService.generateAccessToken(accessTokenPayload);
 
     return newJwtRefreshToken;
+  }
+
+  async logOutUser(token: string): Promise<void> {
+    await this.redisClientService.deleteUser(token);
+    await this.tokenRepo.deleteToken(token);
+  }
+
+  async logOutUserFromAllDevices(user: User): Promise<void> {
+    const userTokens = await this.tokenRepo.getUserTokens(user.id);
+    let delTokens: Promise<boolean>[] = [];
+
+    userTokens.forEach((tkn) => {
+      delTokens.push(this.redisClientService.deleteUser(tkn.token));
+    });
+
+    Promise.all(delTokens).catch((err) => logger.error('Error deleting multiple tokens: ', err));
+
+    await this.tokenRepo.deleteUserTokens(user.id);
+
+    await this.tokenRepo.deleteUserTokens(user.id);
   }
 }

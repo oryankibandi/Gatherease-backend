@@ -23,6 +23,8 @@ import {
 } from '../exceptions';
 import eventDispatcher from '../../adapters/events';
 import { IRedisClient } from '../../adapters/cache/types/interfaces';
+import { Organizer, User } from '@prisma/client';
+import logger from '../../startup/logging';
 
 export default class OrganizerAuthService {
   public static inject = [
@@ -180,5 +182,23 @@ export default class OrganizerAuthService {
     const newJwtRefreshToken = this.jwtGeneratorService.generateAccessToken(accessTokenPayload);
 
     return newJwtRefreshToken;
+  }
+
+  async logOut(organizer: Organizer, token: string): Promise<void> {
+    await this.redisClientService.deleteUser(token);
+    await this.tokenRepo.deleteToken(token);
+  }
+
+  async logOutFromAllDevices(organizer: Organizer, token: string): Promise<void> {
+    const userTokens = await this.tokenRepo.getUserTokens(organizer.id);
+    let delTokens: Promise<boolean>[] = [];
+
+    userTokens.forEach((tkn) => {
+      delTokens.push(this.redisClientService.deleteUser(tkn.token));
+    });
+
+    Promise.all(delTokens).catch((err) => logger.error('Error deleting multiple tokens: ', err));
+
+    await this.tokenRepo.deleteUserTokens(organizer.id);
   }
 }

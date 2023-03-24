@@ -1,6 +1,6 @@
 import { ROLE } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
-import { organizerRepo, userRepo } from '../../adapters/repositories';
+import { organizerRepo, tokenRepo, userRepo } from '../../adapters/repositories';
 import { jwtGenerator } from '../../utils';
 import redisClientService from '../../adapters/cache';
 
@@ -18,7 +18,14 @@ export async function decodeAccessTokenMiddleware(req: Request, res: Response, n
         req.user = redisUser;
         return next();
       }
-      const user = await userRepo.getUserById(decoded.ownerId);
+      const retrievedToken = await tokenRepo.getToken(decoded.accessToken as string);
+
+      if (!retrievedToken) {
+        return res.status(401).json({
+          message: 'Unauthorized',
+        });
+      }
+      const user = await userRepo.getUserById(retrievedToken.ownerId);
 
       if (!user) {
         return res.status(401).json({
@@ -27,6 +34,7 @@ export async function decodeAccessTokenMiddleware(req: Request, res: Response, n
       }
 
       req.user = user;
+      req.token = retrievedToken.token;
 
       return next();
     } else if (decoded.role === ROLE.ORGANIZER) {
@@ -36,7 +44,14 @@ export async function decodeAccessTokenMiddleware(req: Request, res: Response, n
         req.user = redisUser;
         return next();
       }
-      const user = await organizerRepo.getOrganizerById(decoded.ownerId);
+      const retrievedToken = await tokenRepo.getToken(decoded.accessToken as string);
+
+      if (!retrievedToken) {
+        return res.status(401).json({
+          message: 'Unauthorized',
+        });
+      }
+      const user = await organizerRepo.getOrganizerById(retrievedToken.ownerId);
 
       if (!user) {
         return res.status(401).json({
@@ -45,6 +60,7 @@ export async function decodeAccessTokenMiddleware(req: Request, res: Response, n
       }
 
       req.user = user;
+      req.token = retrievedToken.token;
 
       return next();
     }
