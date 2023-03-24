@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  server:
+    container_name: gatherease-backend
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.production
+  redis:
+    container_name: redis
+    image: "redis:alpine"
+    ports:
+      - '6379:6379'
