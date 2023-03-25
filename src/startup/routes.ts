@@ -8,6 +8,8 @@ import userRoutes from '../entrypoint/routes/user.routes';
 import organizerRoutes from '../entrypoint/routes/organizer.routes';
 import eventRoutes from '../entrypoint/routes/event.routes';
 import guestRoutes from '../entrypoint/routes/guest.routes';
+import venueRoutes from '../entrypoint/routes/venue.routes';
+import categoryRoutes from '../entrypoint/routes/category.routes';
 import { decodeAccessTokenMiddleware } from '../entrypoint/middleware/auth';
 
 var corsOptions = {
@@ -54,4 +56,8 @@ export default function routeSetup(app: Application) {
   app.use('/api/v1/event', eventRoutes);
 
   app.use('/api/v1/guest', guestRoutes);
+
+  app.use('/api/v1/venue', venueRoutes);
+
+  app.use('/api/v1/category', categoryRoutes);
 }

@@ -15,6 +15,7 @@ import {
   UpdateOrganizerProfileInput,
   UpdateVenueInput,
 } from './types';
+import { SearchVenueData } from '../../../services/types/types';
 
 export interface IUserRepository {
   updateLastLogin(userId: string): Promise<User>;
@@ -66,6 +67,10 @@ export interface IVenueRepository {
   searchVenuesByName(name: string): Promise<Venue[]>;
 
   searchVenuesByCity(city: string): Promise<Venue[]>;
+
+  searchVenue(data: SearchVenueData, limit: number, page: number): Promise<Venue[]>;
+
+  getSearchItemsCount(data: SearchVenueData): Promise<number>;
 }
 
 export interface IProfileRepositiory {
@@ -114,6 +119,12 @@ export interface ICategortRepository {
   createCategory(name: string): Promise<Category>;
 
   deleteCategory(categoryId: string): Promise<void>;
+
+  getCategory(categoryId: string): Promise<Category | null>;
+
+  searchCategoryByName(name: string, take: number, skip: number): Promise<Category[]>;
+
+  getCategorySearchItemsCount(name: string): Promise<number>;
 }
 
 export interface ITokenRepository {

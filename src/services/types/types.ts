@@ -1,4 +1,4 @@
-import { Event, Organizer, Profile, ROLE, User } from '@prisma/client';
+import { Category, Event, Organizer, Profile, ROLE, User, Venue } from '@prisma/client';
 
 export interface UserRegistrationInput {
   firstName: string;
@@ -109,7 +109,7 @@ export interface SearchEventInput {
   endDate?: Date;
   isPublic?: string;
   category?: string;
-  organizerId?:string;
+  organizerId?: string;
 }
 
 export interface SearchEventsOutput {
@@ -151,3 +151,29 @@ export type EncapOrganizerWithProfile = {
   profileId: string | null;
   role: ROLE;
 } & Profile;
+
+export interface SearchVenueData {
+  name?: string;
+  city?: string;
+  country?: string;
+  latitude?: string;
+  longitude?: string;
+}
+
+export interface SearchVenueOutput {
+  count: number;
+  page: number;
+  next?: number | null;
+  prev?: number | null;
+  totalPages?: number;
+  data: Venue[];
+}
+
+export interface SearchCategoryOutput {
+  count: number;
+  page: number;
+  next?: number | null;
+  prev?: number | null;
+  totalPages?: number;
+  data: Category[];
+}

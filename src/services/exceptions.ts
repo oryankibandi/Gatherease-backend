@@ -90,3 +90,17 @@ export class Forbidden extends ServiceError {
     this.message = message;
   }
 }
+
+export class VenueNotFound extends ServiceError {
+  constructor(message: string) {
+    super();
+    this.message = message;
+  }
+}
+
+export class CategoryNotFound extends ServiceError {
+  constructor(message: string) {
+    super();
+    this.message = message;
+  }
+}
