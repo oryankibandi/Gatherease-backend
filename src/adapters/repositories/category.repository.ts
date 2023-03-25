@@ -21,4 +21,40 @@ export default class CategoryRepository implements ICategortRepository {
       where: { id: categoryId },
     });
   }
+
+  async getCategory(categoryId: string): Promise<Category | null> {
+    return this.client.category.findUnique({
+      where: {
+        id: categoryId,
+      },
+    });
+  }
+
+  async searchCategoryByName(name: string, take: number, skip: number): Promise<Category[]> {
+    return this.client.category.findMany({
+      where: {
+        AND: [
+          {
+            name: {
+              contains: name,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+      take,
+      skip,
+    });
+  }
+
+  async getCategorySearchItemsCount(name: string): Promise<number> {
+    return this.client.category.count({
+      where: {
+        name: {
+          contains: name,
+          mode: 'insensitive',
+        },
+      },
+    });
+  }
 }

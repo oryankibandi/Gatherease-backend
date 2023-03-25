@@ -58,3 +58,13 @@ export interface UpdateEventValidationInput {
 export interface DeleteEventValidationInput {
   eventId: string;
 }
+
+export interface SearchEventvalidationInput {
+  city?: string;
+  name?: string;
+  country?: string;
+  longitude?: string;
+  latitude?: string;
+  limit?: number;
+  page?: number;
+}

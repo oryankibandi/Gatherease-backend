@@ -2,6 +2,7 @@ import { PrismaClient, Venue } from '@prisma/client';
 import { IVenueRepository } from './types/interfaces';
 import { CreateVenueInput, UpdateVenueInput } from './types/types';
 import { DeleteVenueError } from './exceptions';
+import { SearchVenueData } from '../../services/types/types';
 
 export default class VenueRepository implements IVenueRepository {
   private client;
@@ -62,6 +63,86 @@ export default class VenueRepository implements IVenueRepository {
         },
       },
       take: limit,
+    });
+  }
+
+  async searchVenue(data: SearchVenueData, limit: number, page: number): Promise<Venue[]> {
+    return this.client.venue.findMany({
+      where: {
+        AND: [
+          {
+            city: {
+              contains: data.city ?? '',
+              mode: 'insensitive',
+            },
+          },
+          {
+            country: {
+              contains: data.country ?? '',
+              mode: 'insensitive',
+            },
+          },
+          {
+            name: {
+              contains: data.name ?? '',
+              mode: 'insensitive',
+            },
+          },
+          {
+            latitude: {
+              startsWith: data.latitude ?? '',
+              mode: 'insensitive',
+            },
+          },
+          {
+            longitude: {
+              startsWith: data.longitude ?? '',
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+      skip: page,
+      take: limit,
+    });
+  }
+
+  async getSearchItemsCount(data: SearchVenueData): Promise<number> {
+    return this.client.venue.count({
+      where: {
+        AND: [
+          {
+            city: {
+              contains: data.city ?? '',
+              mode: 'insensitive',
+            },
+          },
+          {
+            country: {
+              contains: data.country ?? '',
+              mode: 'insensitive',
+            },
+          },
+          {
+            name: {
+              contains: data.name ?? '',
+              mode: 'insensitive',
+            },
+          },
+          {
+            latitude: {
+              startsWith: data.latitude ?? '',
+              mode: 'insensitive',
+            },
+          },
+          {
+            longitude: {
+              startsWith: data.longitude ?? '',
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
     });
   }
 }
