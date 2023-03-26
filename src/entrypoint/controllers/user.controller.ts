@@ -78,7 +78,7 @@ export async function userLogin(req: Request, res: Response) {
     return res.status(200).json({
       accessToken,
       refreshToken,
-      user: codeGenerator.filterObject(user, { exclude: ['id', 'password'] }),
+      user: codeGenerator.filterObject(user, { exclude: ['password'] }),
     });
   } catch (error) {
     if (error instanceof ServiceError) {
