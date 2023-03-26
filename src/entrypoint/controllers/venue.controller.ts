@@ -44,7 +44,7 @@ export async function searchVenue(req: Request, res: Response) {
   const limit: number = parseInt(req.body.limit ?? 10);
   const page: number = parseInt(req.body.page ?? 1);
   try {
-    const venues = await venueService.searchVenue(req.query, limit, page);
+    const venues = await venueService.searchVenue(req.query);
 
     return res.status(200).json({
       message: 'success',

@@ -68,3 +68,9 @@ export interface SearchEventvalidationInput {
   limit?: number;
   page?: number;
 }
+
+export interface SearchCategoryValidationInput {
+  name?: string;
+  count?: number;
+  page?: number;
+}

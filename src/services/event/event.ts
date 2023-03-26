@@ -11,14 +11,16 @@ import {
 } from '../types/types';
 import { EventNotFound, Forbidden, GuestNotFound, UnauthorizedAction, UserAlreadyRsvp } from '../exceptions';
 import { ICodeGenerator } from '../../utils/types/interfaces';
+import { IOrganizerProfile } from '../types/interfaces';
 
 export default class EventService {
-  public static inject = ['eventRepo', 'guestRepo', 'codeGenerator'] as const;
+  public static inject = ['eventRepo', 'guestRepo', 'codeGenerator', 'organizerProfileService'] as const;
 
   constructor(
     private readonly eventRepo: IEventRepository,
     private readonly guestRepo: IGuestRepository,
-    private readonly codeGenerator: ICodeGenerator
+    private readonly codeGenerator: ICodeGenerator,
+    private readonly organizerProfileService: IOrganizerProfile
   ) {}
 
   async createEvent(data: CreateEventInput): Promise<Event> {
@@ -86,7 +88,9 @@ export default class EventService {
     return true;
   }
 
-  async searchEvent(searchData: SearchEventInput, limit = 10, page = 1): Promise<SearchEventsOutput> {
+  async searchEvent(searchData: SearchEventInput): Promise<SearchEventsOutput> {
+    const page: number = parseInt(searchData.page ?? '1', 10);
+    const limit: number = parseInt(searchData.count ?? '10', 10);
     const startingIndex = (page - 1) * limit;
     const events = await this.eventRepo.searchEvents({
       limit,
@@ -104,7 +108,7 @@ export default class EventService {
       },
     });
     const totalPages = Math.ceil(totalRows / limit);
-    const next = totalRows > startingIndex - 1 + limit ? page + 1 : null;
+    const next = page < totalPages ? page + 1 : null;
     const prev = startingIndex > 0 ? page - 1 : null;
 
     return {
@@ -187,5 +191,17 @@ export default class EventService {
     const guest = await this.getGuest(guestId, organizer);
 
     return this.guestRepo.markGuestAsAttended(guestId);
+  }
+
+  async getEventOrganizer(eventId: string): Promise<any> {
+    const event = await this.getEvent(eventId);
+
+    const organizer = await this.organizerProfileService.getProfile(event.organizerId);
+
+    const filteredOrganizerObj = this.codeGenerator.filterObject(organizer, {
+      include: ['firstName', 'lastName', 'email', 'phone', 'createdAt'],
+    });
+
+    return filteredOrganizerObj;
   }
 }

@@ -18,13 +18,15 @@ export default class VenueService {
     return venue;
   }
 
-  async searchVenue(data: SearchVenueData, limit = 10, page = 1): Promise<SearchVenueOutput> {
+  async searchVenue(data: SearchVenueData): Promise<SearchVenueOutput> {
+    const page: number = parseInt(data.page ?? '1', 10);
+    const limit: number = parseInt(data.count ?? '10', 10);
     const startingIndex = (page - 1) * limit;
     const venues = await this.venueRepo.searchVenue(data, limit, startingIndex);
 
     const totalRows = await this.venueRepo.getSearchItemsCount(data);
     const totalPages = Math.ceil(totalRows / limit);
-    const next = totalRows > startingIndex - 1 + limit ? page + 1 : null;
+    const next = page < totalPages ? page + 1 : null;
     const prev = startingIndex > 0 ? page - 1 : null;
 
     return {

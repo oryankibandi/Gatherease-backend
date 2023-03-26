@@ -70,6 +70,8 @@ export function searchEventsValidation(data: SearchEventInput) {
     isPublic: Joi.bool(),
     category: Joi.string(),
     organizerId: Joi.string(),
+    count: Joi.number(),
+    page: Joi.number(),
   });
 
   return schema.validate(data);

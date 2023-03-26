@@ -30,13 +30,13 @@ export default class CategoryRepository implements ICategortRepository {
     });
   }
 
-  async searchCategoryByName(name: string, take: number, skip: number): Promise<Category[]> {
+  async searchCategoryByName(take: number, skip: number, name?: string): Promise<Category[]> {
     return this.client.category.findMany({
       where: {
         AND: [
           {
             name: {
-              contains: name,
+              contains: name ?? '',
               mode: 'insensitive',
             },
           },
@@ -47,11 +47,11 @@ export default class CategoryRepository implements ICategortRepository {
     });
   }
 
-  async getCategorySearchItemsCount(name: string): Promise<number> {
+  async getCategorySearchItemsCount(name?: string): Promise<number> {
     return this.client.category.count({
       where: {
         name: {
-          contains: name,
+          contains: name ?? '',
           mode: 'insensitive',
         },
       },
