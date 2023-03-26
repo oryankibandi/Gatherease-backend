@@ -1,8 +1,9 @@
 import { IOrganizerRepository } from '../../adapters/repositories/types/interfaces';
 import { ICodeGenerator } from '../../utils/types/interfaces';
 import { UserNotFound } from '../exceptions';
+import { IOrganizerProfile } from '../types/interfaces';
 
-export class OrganizerProfile {
+export class OrganizerProfile implements IOrganizerProfile {
   public static inject = ['organizerRepo', 'codeGenerator'] as const;
 
   constructor(private readonly organizerRepo: IOrganizerRepository, private readonly codeGenerator: ICodeGenerator) {}

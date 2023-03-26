@@ -187,3 +187,12 @@ export interface SearchCategoryInputData {
   page?: string;
   count?: string;
 }
+
+export interface EventOrganizerDetailsOutput {
+  id: 'clf9kwr270001r35ujbd2blyk';
+  firstName: 'Tembea';
+  lastName: 'Kenya';
+  fullName: 'Tembea Kenya';
+  email: 'shreckoryan@gmail.com';
+  phone: '+254701724629';
+}

@@ -11,14 +11,16 @@ import {
 } from '../types/types';
 import { EventNotFound, Forbidden, GuestNotFound, UnauthorizedAction, UserAlreadyRsvp } from '../exceptions';
 import { ICodeGenerator } from '../../utils/types/interfaces';
+import { IOrganizerProfile } from '../types/interfaces';
 
 export default class EventService {
-  public static inject = ['eventRepo', 'guestRepo', 'codeGenerator'] as const;
+  public static inject = ['eventRepo', 'guestRepo', 'codeGenerator', 'organizerProfileService'] as const;
 
   constructor(
     private readonly eventRepo: IEventRepository,
     private readonly guestRepo: IGuestRepository,
-    private readonly codeGenerator: ICodeGenerator
+    private readonly codeGenerator: ICodeGenerator,
+    private readonly organizerProfileService: IOrganizerProfile
   ) {}
 
   async createEvent(data: CreateEventInput): Promise<Event> {
@@ -189,5 +191,17 @@ export default class EventService {
     const guest = await this.getGuest(guestId, organizer);
 
     return this.guestRepo.markGuestAsAttended(guestId);
+  }
+
+  async getEventOrganizer(eventId: string): Promise<any> {
+    const event = await this.getEvent(eventId);
+
+    const organizer = await this.organizerProfileService.getProfile(event.organizerId);
+
+    const filteredOrganizerObj = this.codeGenerator.filterObject(organizer, {
+      include: ['firstName', 'lastName', 'email', 'phone', 'createdAt'],
+    });
+
+    return filteredOrganizerObj;
   }
 }

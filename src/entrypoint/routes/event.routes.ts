@@ -18,6 +18,8 @@ router.post('/rsvp', grantAccess('createOwn', 'rsvp'), eventController.rsvpToEve
 
 router.get('/guestList/:eventId', grantAccess('readOwn', 'guestList'), eventController.getGuestList);
 
+router.get('/organizer/:eventId', eventController.getEventOrganizer);
+
 router.post(
   '/upload',
   grantAccess('create', 'eventImage'),

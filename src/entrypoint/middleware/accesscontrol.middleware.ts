@@ -10,6 +10,7 @@ const user = ROLE.USER;
 ac.grant(user).resource('event').readAny();
 ac.grant(user).resource('rsvp').createOwn();
 ac.grant(user).resource('userprofile').createOwn().readOwn().updateOwn();
+ac.grant(user).resource('organizerprofile').readAny();
 ac.grant(organizer).resource('event').create().readAny().updateOwn().deleteOwn().readOwn();
 ac.grant(organizer).resource('eventImage').create().deleteOwn().updateOwn().readAny();
 ac.grant(organizer).resource('guest').readOwn().deleteOwn().updateOwn();

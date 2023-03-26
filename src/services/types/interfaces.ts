@@ -6,3 +6,7 @@ export interface IUserAuthService {
 
   loginUser(data: UserAuthenticationInput): Promise<User>;
 }
+
+export interface IOrganizerProfile {
+  getProfile(organizerId: string): Promise<any>;
+}

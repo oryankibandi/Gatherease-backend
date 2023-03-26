@@ -340,3 +340,33 @@ export async function markGuestAsAttended(req: Request, res: Response) {
     });
   }
 }
+
+export async function getEventOrganizer(req: Request, res: Response) {
+  const { eventId } = req.params;
+
+  if (!eventId) {
+    return res.status(400).json({
+      message: '`eventId` is required',
+    });
+  }
+
+  try {
+    const organizer = await eventService.getEventOrganizer(eventId);
+
+    return res.status(200).json({
+      message: 'success',
+      data: organizer,
+    });
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      return res.status(400).json({
+        message: error.message,
+      });
+    }
+
+    console.error(error);
+    return res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
+}

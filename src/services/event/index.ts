@@ -4,11 +4,13 @@ import { createInjector } from 'typed-inject';
 import { eventRepo, guestRepo, imageRepo } from '../../adapters/repositories';
 import { cloudinaryImageService } from '../../../lib/cloudinary';
 import { codeGenerator } from '../../utils';
+import { organizerProfileService } from '../organizer';
 
 const eventServiceInjector = createInjector()
   .provideValue('eventRepo', eventRepo)
   .provideValue('guestRepo', guestRepo)
-  .provideValue('codeGenerator', codeGenerator);
+  .provideValue('codeGenerator', codeGenerator)
+  .provideValue('organizerProfileService', organizerProfileService);
 const imageServiceInjector = createInjector()
   .provideValue('imageRepo', imageRepo)
   .provideValue('codeGenerator', codeGenerator)
