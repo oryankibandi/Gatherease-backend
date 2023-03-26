@@ -154,6 +154,7 @@ export async function searchEvents(req: Request, res: Response) {
       data: retrievedEvents,
     });
   } catch (error) {
+    console.log('ERR: ', error);
     if (error instanceof ServiceError) {
       return res.status(400).json({
         message: error.message,

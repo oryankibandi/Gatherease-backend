@@ -1,5 +1,5 @@
 import { ICategortRepository } from '../../adapters/repositories/types/interfaces';
-import { SearchCategoryOutput } from '../types/types';
+import { SearchCategoryInputData, SearchCategoryOutput } from '../types/types';
 import { CategoryNotFound } from '../exceptions';
 import { Category } from '@prisma/client';
 
@@ -18,22 +18,25 @@ export default class CategoryService {
     return venue;
   }
 
-  async searchCategory(name: string, page = 1, limit = 10): Promise<SearchCategoryOutput> {
-    const startingIndex = (page - 1) * limit;
-    const venues = await this.categoryRepo.searchCategoryByName(name, limit, startingIndex);
+  async searchCategory(data: SearchCategoryInputData): Promise<SearchCategoryOutput> {
+    const page: number = parseInt(data.page ?? '1', 10);
+    const limit: number = parseInt(data.count ?? '10', 10);
 
-    const totalRows = await this.categoryRepo.getCategorySearchItemsCount(name);
+    const startingIndex = (page - 1) * limit;
+    const categories = await this.categoryRepo.searchCategoryByName(limit, startingIndex, data.name);
+
+    const totalRows = await this.categoryRepo.getCategorySearchItemsCount(data.name);
     const totalPages = Math.ceil(totalRows / limit);
-    const next = totalRows > startingIndex - 1 + limit ? page + 1 : null;
+    const next = page < totalPages ? page + 1 : null;
     const prev = startingIndex > 0 ? page - 1 : null;
 
     return {
-      count: venues.length,
+      count: categories.length,
       page,
       next,
       prev,
       totalPages,
-      data: venues,
+      data: categories,
     };
   }
 }

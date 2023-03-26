@@ -110,6 +110,8 @@ export interface SearchEventInput {
   isPublic?: string;
   category?: string;
   organizerId?: string;
+  count?: string;
+  page?: string;
 }
 
 export interface SearchEventsOutput {
@@ -158,6 +160,8 @@ export interface SearchVenueData {
   country?: string;
   latitude?: string;
   longitude?: string;
+  count?: string;
+  page?: string;
 }
 
 export interface SearchVenueOutput {
@@ -176,4 +180,10 @@ export interface SearchCategoryOutput {
   prev?: number | null;
   totalPages?: number;
   data: Category[];
+}
+
+export interface SearchCategoryInputData {
+  name?: string;
+  page?: string;
+  count?: string;
 }

@@ -86,7 +86,9 @@ export default class EventService {
     return true;
   }
 
-  async searchEvent(searchData: SearchEventInput, limit = 10, page = 1): Promise<SearchEventsOutput> {
+  async searchEvent(searchData: SearchEventInput): Promise<SearchEventsOutput> {
+    const page: number = parseInt(searchData.page ?? '1', 10);
+    const limit: number = parseInt(searchData.count ?? '10', 10);
     const startingIndex = (page - 1) * limit;
     const events = await this.eventRepo.searchEvents({
       limit,
@@ -104,7 +106,7 @@ export default class EventService {
       },
     });
     const totalPages = Math.ceil(totalRows / limit);
-    const next = totalRows > startingIndex - 1 + limit ? page + 1 : null;
+    const next = page < totalPages ? page + 1 : null;
     const prev = startingIndex > 0 ? page - 1 : null;
 
     return {

@@ -7,7 +7,7 @@ export function searchVenueInputValidation(data: SearchEventvalidationInput) {
     country: Joi.string(),
     longitude: Joi.string(),
     latitude: Joi.string(),
-    limit: Joi.number(),
+    count: Joi.number(),
     page: Joi.number(),
   });
 

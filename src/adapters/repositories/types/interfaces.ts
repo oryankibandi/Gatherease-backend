@@ -124,9 +124,9 @@ export interface ICategortRepository {
 
   getCategory(categoryId: string): Promise<Category | null>;
 
-  searchCategoryByName(name: string, take: number, skip: number): Promise<Category[]>;
+  searchCategoryByName(take: number, skip: number, name?: string): Promise<Category[]>;
 
-  getCategorySearchItemsCount(name: string): Promise<number>;
+  getCategorySearchItemsCount(name?: string): Promise<number>;
 }
 
 export interface ITokenRepository {
