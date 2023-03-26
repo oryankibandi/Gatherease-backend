@@ -96,7 +96,13 @@ export default class EventService {
       },
     });
 
-    const totalRows = await this.eventRepo.getCount();
+    const totalRows = await this.eventRepo.getSearchEventsCount({
+      limit,
+      page: startingIndex,
+      filters: {
+        ...searchData,
+      },
+    });
     const totalPages = Math.ceil(totalRows / limit);
     const next = totalRows > startingIndex - 1 + limit ? page + 1 : null;
     const prev = startingIndex > 0 ? page - 1 : null;

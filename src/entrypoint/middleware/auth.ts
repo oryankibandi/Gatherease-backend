@@ -64,9 +64,9 @@ export async function decodeAccessTokenMiddleware(req: Request, res: Response, n
 
       return next();
     }
-  } catch (error) {
+  } catch (error: any) {
     return res.status(401).json({
-      message: 'Unauthorized',
+      message: error.message.toUpperCase(),
     });
   }
 }
