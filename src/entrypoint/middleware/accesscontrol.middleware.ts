@@ -26,8 +26,8 @@ export function grantAccess(action: keyof Query, resource: string) {
     const permission = ac.can(req.user.role)[action](resource) as Permission;
 
     if (!permission.granted) {
-      return res.status(401).json({
-        mesage: 'Unauthorized',
+      return res.status(403).json({
+        mesage: 'Forbidden',
       });
     } else {
       return next();

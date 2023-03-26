@@ -134,6 +134,49 @@ export default class EventRepository implements IEventRepository {
     });
   }
 
+  async getSearchEventsCount(data: SearchEventRepoInput): Promise<number> {
+    return this.client.event.count({
+      where: {
+        AND: [
+          {
+            city: {
+              contains: data.filters.city ?? '',
+              mode: 'insensitive',
+            },
+          },
+          {
+            venue: {
+              name: {
+                contains: data.filters.venue ?? '',
+                mode: 'insensitive',
+              },
+            },
+          },
+          {
+            date: {
+              gte: data.filters.startDate,
+              lte: data.filters.endDate,
+            },
+          },
+          {
+            category: {
+              name: {
+                contains: data.filters.category ?? '',
+                mode: 'insensitive',
+              },
+            },
+          },
+          {
+            organizerId: {
+              contains: data.filters.organizerId ?? '',
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+    });
+  }
+
   async getCount(): Promise<number> {
     return this.client.event.count();
   }

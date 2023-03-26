@@ -98,6 +98,8 @@ export interface IEventRepository {
 
   searchEvents(data: SearchEventRepoInput): Promise<Event[]>;
 
+  getSearchEventsCount(data: SearchEventRepoInput): Promise<number>;
+
   getCount(): Promise<number>;
 }
 
