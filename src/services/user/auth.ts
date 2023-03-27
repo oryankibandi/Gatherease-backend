@@ -39,10 +39,10 @@ export class UserAuthService {
   async registerUser(data: UserRegistrationInput): Promise<User> {
     // check existing user
     const existingUserEmail = await this.userRepo.getUserByEmail(data.email);
-    const existingUserPhone = await this.userRepo.getUserByEmail(data.email);
+    const existingUserPhone = await this.userRepo.getUserByPhone(data.phone);
 
     if (existingUserEmail) throw new UserExistsError(`Email ${data.email} is already registered`);
-    if (existingUserPhone) throw new UserExistsError(`Email ${data.phone} is already registered`);
+    if (existingUserPhone) throw new UserExistsError(`Phone ${data.phone} is already registered`);
 
     // hash password
 

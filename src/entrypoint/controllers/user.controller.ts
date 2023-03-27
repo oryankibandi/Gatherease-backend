@@ -8,6 +8,7 @@ import { userAuthService, userProfileService } from '../../services/user';
 import { ServiceError } from '../../services/exceptions';
 import { codeGenerator } from '../../utils';
 import { User } from '@prisma/client';
+import logger from '../../startup/logging';
 
 export async function registerUser(req: Request, res: Response) {
   const { error } = userRegistrationValidation(req.body);
@@ -28,6 +29,8 @@ export async function registerUser(req: Request, res: Response) {
         message: error.message,
       });
     }
+
+    logger.error(error);
 
     return res.status(500).json({
       message: 'Internal Server Error',
