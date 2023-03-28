@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .body {
+        color: black;
+        align-items: center;
+        justify-content: center;
+        justify-items: center;
+        text-align: center;
+      }
+
+      .greetings {
+        font-size: large;
+      }
+
+      .welcome {
+        color: blue;
+        font-style: oblique;
+        font-family: fantasy;
+      }
+
+      .content {
+        border-radius: 20px;
+        background-color: beige;
+        padding: 20px;
+      }
+
+      .footer {
+        margin-top: 30vh;
+        text-align: center;
+        position: relative;
+        bottom: 0;
+        top: 100%;
+      }
+
+      .contact {
+        color: blue;
+        font-style: italic;
+        cursor: pointer;
+      }
+
+      .contact {
+        color: blue;
+      }
+
+      #homelink {
+        font-weight: bold;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="body">
+      <div class="landing-img">
+        <img src="https://www.shutterstock.com/image-vector/white-events-sign-over-confetti-260nw-300283754.jpg" />
+      </div>
+      <div class="content">
+        <div class="greetings" style="font-size: large">
+          <h2 class="welcome" style="color: blue; font-style: oblique; font-family: fantasy">Welcome aboard</h2>
+          <br />
+        </div>
+        Hello <strong>{{name}}</strong>
+        <br />
+        <br />
+        Welcome to <strong>Gatherease</strong> event planning platform.
+        <br />
+        <br />
+        <p>
+          Head over to <a href="https://gatherease.netlify.app/user/login" id="homelink">gatherease.com</a> to checkout
+          some amazing events.
+        </p>
+      </div>
+    </div>
+
+    <footer class="footer">You can contact us at <span class="contact">admin@iankibandi.tech</span></footer>
+  </body>
+</html>

@@ -1,5 +1,4 @@
 import CloudinaryBase from './base.cloudinary';
-import { CloudinaryImageUploadResponse } from './types/types';
 import { ICloudinaryImageService } from './types/interfaces';
 import { UploadApiResponse } from 'cloudinary';
 import streamifier from 'streamifier';

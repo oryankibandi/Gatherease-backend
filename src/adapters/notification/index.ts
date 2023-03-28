@@ -1,9 +1,13 @@
 import { createInjector } from 'typed-inject';
 import SMSNotification from './sms.notification';
+import EmailNotification from './email.notification';
 import { twilioSmsService } from '../../../lib/twilio';
+import { mailgunEmailService } from '../../../lib/mailgun';
 
-const notificationInjector = createInjector().provideValue('twilioSmsService', twilioSmsService);
+const smsNotificationInjector = createInjector().provideValue('twilioSmsService', twilioSmsService);
+const emailNotificationInjector = createInjector().provideValue('mailgunEmailService', mailgunEmailService);
 
-const smsNotificationService = notificationInjector.injectClass(SMSNotification);
+const smsNotificationService = smsNotificationInjector.injectClass(SMSNotification);
+const emailNotificationService = emailNotificationInjector.injectClass(EmailNotification);
 
-export { smsNotificationService };
+export { smsNotificationService, emailNotificationService };

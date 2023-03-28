@@ -77,7 +77,7 @@ export async function userLogin(req: Request, res: Response) {
   try {
     const { accessToken, refreshToken, user } = await userAuthService.authenticateUser(req.body);
 
-    res.cookie('x-refresh-token', refreshToken);
+    res.setHeader('Set-Cookie', `x-refresh-token=${refreshToken}`);
     return res.status(200).json({
       accessToken,
       refreshToken,

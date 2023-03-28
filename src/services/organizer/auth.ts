@@ -77,7 +77,7 @@ export default class OrganizerAuthService {
     await this.verifyRepo.createVerification({ code: verificationCode, ownerId: newOrganizer.id });
 
     // send verification code
-    eventDispatcher.dispatch('onUserRegistration', { user: newOrganizer, code: verificationCode });
+    eventDispatcher.dispatch('onOrganizerRegistration', { user: newOrganizer, code: verificationCode });
 
     return newOrganizer;
   }
@@ -89,6 +89,7 @@ export default class OrganizerAuthService {
     if (!existingOrganizer) throw new UserNotFound(`Phone number ${data.phone} is not registered`);
 
     const organizerProfile = await this.profileRepo.getOrganizerProfile(existingOrganizer.id);
+
     if (organizerProfile?.isVerified) throw new UserAlreadyVerified('User is already verified');
 
     const verify = await this.verifyRepo.getVerification(existingOrganizer.id);
