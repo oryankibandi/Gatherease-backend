@@ -20,7 +20,7 @@ export async function registerOrganizer(req: Request, res: Response) {
   }
 
   try {
-    const newOrganizer = organizerAuthService.registerOrganizer(req.body);
+    const newOrganizer = await organizerAuthService.registerOrganizer(req.body);
 
     return res.status(200).json({
       message: 'Verfification code sent.',
@@ -78,7 +78,7 @@ export async function organizerLogin(req: Request, res: Response) {
   try {
     const { accessToken, refreshToken, organizer } = await organizerAuthService.authenticateOrganizer(req.body);
 
-    res.cookie('x-refresh-token', refreshToken);
+    res.setHeader('Set-Cookie', `x-refresh-token=${refreshToken}`);
     return res.status(200).json({
       accessToken,
       refreshToken,

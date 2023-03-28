@@ -129,6 +129,9 @@ export default class EventRepository implements IEventRepository {
           },
         ],
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
       take: data.limit,
       skip: data.page,
     });

@@ -8,6 +8,7 @@ import { userAuthService, userProfileService } from '../../services/user';
 import { ServiceError } from '../../services/exceptions';
 import { codeGenerator } from '../../utils';
 import { User } from '@prisma/client';
+import logger from '../../startup/logging';
 
 export async function registerUser(req: Request, res: Response) {
   const { error } = userRegistrationValidation(req.body);
@@ -28,6 +29,8 @@ export async function registerUser(req: Request, res: Response) {
         message: error.message,
       });
     }
+
+    logger.error(error);
 
     return res.status(500).json({
       message: 'Internal Server Error',
@@ -74,11 +77,11 @@ export async function userLogin(req: Request, res: Response) {
   try {
     const { accessToken, refreshToken, user } = await userAuthService.authenticateUser(req.body);
 
-    res.cookie('x-refresh-token', refreshToken);
+    res.setHeader('Set-Cookie', `x-refresh-token=${refreshToken}`);
     return res.status(200).json({
       accessToken,
       refreshToken,
-      user: codeGenerator.filterObject(user, { exclude: ['id', 'password'] }),
+      user: codeGenerator.filterObject(user, { exclude: ['password'] }),
     });
   } catch (error) {
     if (error instanceof ServiceError) {

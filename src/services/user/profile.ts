@@ -12,6 +12,6 @@ export class Userprofile {
 
     if (!user) throw new UserNotFound('Organizer not found');
 
-    return this.codeGenerator.filterObject(user, { exclude: ['id', 'password'] });
+    return this.codeGenerator.filterObject(user, { exclude: ['password'] });
   }
 }
