@@ -2,7 +2,7 @@ import { Guest, PrismaClient, User } from '@prisma/client';
 import { IUserRepository } from './types/interfaces';
 import { CreateGuestInput, CreateUserInput } from './types/types';
 
-export default class UserRepo implements IUserRepository {
+export default class UserRepository implements IUserRepository {
   constructor(private readonly client: PrismaClient) {
     this.client = client;
   }
@@ -16,6 +16,13 @@ export default class UserRepo implements IUserRepository {
   async getUserByEmail(email: string): Promise<User | null> {
     return this.client.user.findUnique({
       where: { email },
+      include: { eventsAttended: true },
+    });
+  }
+
+  async getUserByPhone(phone: string): Promise<User | null> {
+    return this.client.user.findUnique({
+      where: { phone },
       include: { eventsAttended: true },
     });
   }
@@ -40,6 +47,13 @@ export default class UserRepo implements IUserRepository {
   async createGuest(data: CreateGuestInput): Promise<Guest> {
     return this.client.guest.create({
       data,
+    });
+  }
+
+  async updateLastLogin(userId: string): Promise<User> {
+    return this.client.user.update({
+      where: { id: userId },
+      data: { lastLogin: new Date(Date.now()) },
     });
   }
 

@@ -53,6 +53,9 @@ web_modules/
 # TypeScript cache
 *.tsbuildinfo
 
+#Typescript build directory
+build/
+
 # Optional npm cache directory
 .npm
 
@@ -284,3 +287,6 @@ readme.todo
 .env*
 !.env.example
 cert*/
+
+#test file
+test.ts
